@@ -8,6 +8,7 @@ import RuleBox from "./RuleBox";
 import AddRuleToTaskModal from "./AddRuleToTaskModal";
 import waitForConfirmSwal from "@/utils/waitForConfirmSwal";
 import GameBoxTopRow from "./GameBoxTopRow";
+import GamificationMode from "./GamificationMode";
 
 export default function GameBox(props: {
   task: TaskJson;
@@ -128,6 +129,8 @@ export default function GameBox(props: {
         rules={rules}
         reloadData={reloadData}
       />
+
+      <GamificationMode />
     </div>
   );
 }
