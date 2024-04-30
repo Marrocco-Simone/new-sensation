@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   SectionDescription,
   SectionTitle,
@@ -9,67 +9,70 @@ import {
   TdCell,
   ThCell,
 } from "./utils";
-import { Badge } from "./types";
-import Image from "next/image";
+import { Badge, BadgeJson } from "./types";
 import { toBase64 } from "@/utils/toBase64";
 import { Pen, Bin, PlusRound } from "../Icons";
+import { createBadgeApi, deleteBadgeApi, modifyBadgeApi } from "@/utils/callKnownApi";
+import { useCustomUserContext } from "@/app/context/userStore";
 
 const badgeSubmit: (
   setBadgeModifying: (s: string) => void,
-  badge_to_modify?: string
+  setBadges: Dispatch<SetStateAction<Badge[]>>,
+  badge_to_modify?: string,
+  accessToken?: string,
 ) => React.FormEventHandler<HTMLFormElement> =
-  (setBadgeModifying, badge_to_modify) => (event) => {
+  (setBadgeModifying, setBadges, badge_to_modify, accessToken) => (event) => {
     event.preventDefault();
 
     const target = event.target as typeof event.target & {
       name: HTMLInputElement;
       description: HTMLInputElement;
-      image: HTMLInputElement;
     };
     const name = target.name.value;
     const description = target.description.value;
-    const image = target.image.files?.[0];
 
-    // TODO API
-    // TODO differientate between modify and new badge (badge_to_modify)
-    if (image) {
-      toBase64(image).then((image_b64) =>
-        alert(JSON.stringify({ name, description, image_b64 }))
-      );
+    const badge: BadgeJson = {name: name, description: description};
+
+    if (!badge_to_modify) {
+      createBadgeApi(badge, accessToken, (badge) => {
+        setBadges(prev => [...prev, badge as Badge])
+        setBadgeModifying("");
+        // @ts-expect-error
+        target.reset();
+      })
     } else {
-      alert(JSON.stringify({ name, description }));
+      modifyBadgeApi(badge_to_modify, badge, accessToken, (badge) => {
+        setBadges(prev => prev.map(b => b._id == badge_to_modify ? badge : b))
+        setBadgeModifying("");
+        // @ts-expect-error
+        target.reset();
+      })
     }
-
-    setBadgeModifying("");
-    // @ts-expect-error
-    target.reset();
   };
 
 function BadgeRow({
   badge,
   setBadgeModifying,
+  setBadges,
 }: {
   badge: Badge;
   setBadgeModifying: (badge_name: string) => void;
+  setBadges: Dispatch<SetStateAction<Badge[]>>,
 }) {
+  const {accessToken} = useCustomUserContext();
+  
   return (
     <tr>
       <TdCell>{badge.name}</TdCell>
       <TdCell>{badge.description}</TdCell>
-      <TdCell>
-        <div className="w-10 h-10 relative mx-auto">
-          <Image src={badge.image} alt={badge.name} fill/>
-        </div>
-      </TdCell>
       <td>
         <div className="flex items-center">
-          <div onClick={() => setBadgeModifying(badge.name)} className="h-10 aspect-square hover:scale-110">
+          <div onClick={() => setBadgeModifying(badge._id)} className="h-10 aspect-square hover:scale-110">
             <Pen />
           </div>
           <div
             onClick={() => {
-              // TODO API
-              alert(`Delete badge: ${badge.name}`);
+              deleteBadgeApi(badge._id, accessToken, () => setBadges(prev => prev.filter(b => b._id !== badge._id)))
             }}
             className="h-10 aspect-square hover:scale-110"
           >
@@ -84,11 +87,14 @@ function BadgeRow({
 function ModifyBadgeRow({
   badge,
   setBadgeModifying,
+  setBadges
 }: {
   badge?: Badge;
   setBadgeModifying: (badge_name: string) => void;
+  setBadges: Dispatch<SetStateAction<Badge[]>>;
 }) {
   const form_id = badge ? "modify-badge-form" : "new-badge-form";
+  const {accessToken} = useCustomUserContext();
 
   return (
     <tr>
@@ -115,25 +121,10 @@ function ModifyBadgeRow({
           required
         />
       </TdCell>
-      <TdCell>
-        <label>
-          Carica immagine
-          <input
-            type="file"
-            // accept="image/png, image/gif, image/jpeg"
-            accept="image/jpeg"
-            placeholder="Carica immagine"
-            id="image"
-            form={form_id}
-            className="w-full"
-          style={{ backgroundColor: "#E6F0F9" }}
-          />
-        </label>
-      </TdCell>
       <td>
         <form
           id={form_id}
-          onSubmit={badgeSubmit(setBadgeModifying, badge?.name)}
+          onSubmit={badgeSubmit(setBadgeModifying, setBadges, badge?._id, accessToken)}
           className="m-2 flex items-center"
         >
           <button
@@ -150,6 +141,11 @@ function ModifyBadgeRow({
 
 export function Badges({ badges }: { badges: Badge[] }) {
   const [badge_modifying, setBadgeModifying] = useState("");
+  const [currentBadges, setCurrentBadges] = useState<Badge[]>(badges);
+
+  useEffect(() => {
+    setCurrentBadges(badges)
+  }, [badges])
 
   return (
     <section>
@@ -170,17 +166,17 @@ export function Badges({ badges }: { badges: Badge[] }) {
           <tr>
             <ThCell>Nome</ThCell>
             <ThCell>Descrizione</ThCell>
-            <ThCell>Immagine</ThCell>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {badges.map((badge) => {
-            if (badge.name === badge_modifying)
+          {currentBadges.map((badge) => {
+            if (badge._id === badge_modifying)
               return (
                 <ModifyBadgeRow
                   badge={badge}
                   setBadgeModifying={setBadgeModifying}
+                  setBadges={setCurrentBadges}
                 />
               );
 
@@ -188,11 +184,12 @@ export function Badges({ badges }: { badges: Badge[] }) {
               <BadgeRow
                 badge={badge}
                 setBadgeModifying={setBadgeModifying}
-                key={badge.name}
+                setBadges={setCurrentBadges}
+                key={badge._id}
               />
             );
           })}
-          <ModifyBadgeRow setBadgeModifying={setBadgeModifying} />
+          <ModifyBadgeRow setBadgeModifying={setBadgeModifying} setBadges={setCurrentBadges} />
         </tbody>
       </Table>
     </section>

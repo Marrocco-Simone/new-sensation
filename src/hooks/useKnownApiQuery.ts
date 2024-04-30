@@ -12,6 +12,7 @@ import {
   convertRuleJsonToRule,
   convertVocabularyMetadataToVocabularyAndBlocks,
 } from "@/utils/fromApitoAppTypes";
+import { Badge, ExerciseLevel, ExperienceLevel } from "@/components/Element/types";
 
 export function useVocabularyApiQuery(): apiQueryResponse<{
   vocabularies_metadata: VocabularyMetadata[];
@@ -84,4 +85,16 @@ export function useRulesApiQuery(
 
 export function useTasksApiQuery(): apiQueryResponse<TaskJson[]> {
   return useApiQuery("tasks", apiGet<TaskJson[]>);
+}
+
+export function useBadgesApiQuery(): apiQueryResponse<Badge[]> {
+  return useApiQuery("http://localhost:5001/badge/getBadges", apiGet<Badge[]>);
+}
+
+export function useExpLevelsApiQuery(): apiQueryResponse<ExperienceLevel[]> {
+  return useApiQuery("http://localhost:5001/levels", apiGet<ExperienceLevel[]>);
+}
+
+export function useExecLevelsApiQuery(): apiQueryResponse<ExerciseLevel[]> {
+  return useApiQuery("http://localhost:5001/games/levels", apiGet<ExerciseLevel[]>);
 }

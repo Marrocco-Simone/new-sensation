@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import wrapApiCallInWaitingSwal from "./wrapApiCallInWaitingSwal";
 import { apiDelete, apiPost, apiPut } from "@/services/api";
 import waitForConfirmSwal from "./waitForConfirmSwal";
+import { Badge, BadgeJson, ExerciseLevel, ExperienceLevel, ExperienceLevelJson } from "@/components/Element/types";
 
 export function createRuleApi(
   rule: Rule,
@@ -134,5 +135,121 @@ export function deleteTaskApi(task: TaskJson, access_token?: string, reloadData?
         if (reloadData) reloadData();
       }
     )
+  );
+}
+
+export function createBadgeApi(
+  badge: BadgeJson,
+  access_token?: string,
+  reloadData?: (badge: Badge) => void
+) {
+  wrapApiCallInWaitingSwal(
+    () => apiPost<Badge>("http://localhost:5001/badge/add", badge, access_token),
+    (res) => {
+      Swal.fire("Badge creato", res.data?.name, "success");
+      if (reloadData && res.data) reloadData(res.data);
+    }
+  );
+}
+
+export function modifyBadgeApi(
+  badge_id: string,
+  badge: BadgeJson,
+  access_token?: string,
+  reloadData?: (badge: Badge) => void
+) {
+  wrapApiCallInWaitingSwal(
+    () => apiPut<Badge>("http://localhost:5001/badge/"+badge_id, badge, access_token),
+    (res) => {
+      Swal.fire("Badge modificato", res.data?.name, "success");
+      if (reloadData && res.data) reloadData(res.data);
+    }
+  );
+}
+
+export function deleteBadgeApi(
+  badge_id: string,
+  access_token?: string,
+  reloadData?: () => void
+) {
+  wrapApiCallInWaitingSwal(
+    () => apiDelete<null>("http://localhost:5001/badge/"+badge_id, access_token),
+    (res) => {
+      Swal.fire("Badge cancellato", "success");
+      if (reloadData) reloadData();
+    }
+  );
+}
+
+export function createExpLevelApi(
+  exp_lvl: ExperienceLevelJson,
+  access_token?: string,
+  reloadData?: (expLvl: ExperienceLevel) => void
+) {
+  wrapApiCallInWaitingSwal(
+    () => apiPost<ExperienceLevel>("http://localhost:5001/levels",exp_lvl, access_token),
+    (res) => {
+      Swal.fire("Livello esperienza "+ res.data?.name +" aggiunto", "success");
+      if (reloadData && res.data) reloadData(res.data);
+    }
+  );
+}
+
+export function modifyExpLevelApi(
+  exp_lvl_id: string,
+  exp_lvl: ExperienceLevelJson,
+  access_token?: string,
+  reloadData?: (expLvl: ExperienceLevel) => void
+) {
+  wrapApiCallInWaitingSwal(
+    () => apiPut<ExperienceLevel>("http://localhost:5001/levels/"+exp_lvl_id ,exp_lvl, access_token),
+    (res) => {
+      Swal.fire("Livello esperienza "+ res.data?.name +" aggiunto", "success");
+      if (reloadData && res.data) reloadData(res.data);
+    }
+  );
+}
+
+export function deleteExpLvlApi(
+  exp_lvl_id: string,
+  access_token?: string,
+  reloadData?: () => void
+) {
+  wrapApiCallInWaitingSwal(
+    () => apiDelete<null>("http://localhost:5001/levels/"+exp_lvl_id, access_token),
+    (res) => {
+      Swal.fire("Livello esperienza cancellato", "success");
+      if (reloadData) reloadData();
+    }
+  );
+}
+
+export function createExerciseLevelApi(
+  game_id: string,
+  exc_lvl: ExerciseLevel,
+  access_token?: string,
+  reloadData?: (expLvl: ExperienceLevel) => void
+) {
+  wrapApiCallInWaitingSwal(
+    () => apiPost<ExperienceLevel>("http://localhost:5001/games/"+game_id+"/levels", exc_lvl, access_token),
+    (res) => {
+      Swal.fire("Livello esercizio "+ res.data?.name +" aggiunto", "success");
+      if (reloadData && res.data) reloadData(res.data);
+    }
+  );
+}
+
+export function deleteExecLvlApi(
+  game_id: string,
+  exp_lvl_id: string,
+  access_token?: string,
+  reloadData?: () => void
+) {
+  wrapApiCallInWaitingSwal(
+    () => apiDelete<null>("http://localhost:5001/games/"+game_id+"/levels/"+exp_lvl_id, access_token),
+    (res) => {
+      Swal.fire("Livello esperienza cancellato", "success");
+      if (reloadData) reloadData();
+    }
   );
 }

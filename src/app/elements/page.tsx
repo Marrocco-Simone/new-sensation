@@ -2,6 +2,7 @@
 
 import { Badges, Levels, Points } from "@/components/Element";
 import { Badge, ExerciseLevel, ExperienceLevel, Point } from "@/components/Element/types";
+import { useBadgesApiQuery, useExecLevelsApiQuery, useExpLevelsApiQuery } from "@/hooks/useKnownApiQuery";
 import React from "react";
 
 function ElementsLoaded(props: {
@@ -22,23 +23,37 @@ function ElementsLoaded(props: {
 }
 
 export default function ClientPage() {
-  // TODO API
-  const badges: Badge[] = [
-    {
-      name: "my badge",
-      description:
-        "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veniam ex non iste quae labore fugiat laudantium, nesciunt ab rem perferendis",
-      image:
-        "data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
-    },
-    {
-      name: "badge 2",
-      description:
-        "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veniam ex non iste quae labore fugiat laudantium, nesciunt ab rem perferendis",
-      image:
-        "data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
-    },
-  ];
+  const { 
+    data: badges = [] as Badge[],
+    is_loading: badgeLoading,
+    is_error: badgeError
+  } = useBadgesApiQuery();
+
+  const { 
+    data: experience_levels = [] as ExperienceLevel[],
+    is_loading: experience_levels_loading,
+    is_error: experience_levels_error
+  } = useExpLevelsApiQuery();
+
+  const { 
+    data: exercises_levels = [] as ExerciseLevel[],
+    is_loading: exercises_levels_loading,
+    is_error: exercises_levels_error
+  } = useExecLevelsApiQuery(); // TODO: setta
+
+  // // TODO API
+  // const badges: Badge[] = [
+  //   {
+  //     name: "my badge",
+  //     description:
+  //       "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veniam ex non iste quae labore fugiat laudantium, nesciunt ab rem perferendis"
+  //   },
+  //   {
+  //     name: "badge 2",
+  //     description:
+  //       "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veniam ex non iste quae labore fugiat laudantium, nesciunt ab rem perferendis"
+  //   },
+  // ];
 
   const points: Point[] = [
     {
@@ -47,26 +62,11 @@ export default function ClientPage() {
     },
   ];
 
-  const exercise_levels: ExerciseLevel[] = [
-    {
-      n: 1,
-      game: "my game",
-      name: "my exercise level",
-    },
-  ];
-
-  const experience_levels: ExperienceLevel[] = [
-    {
-      n: 1,
-      name: "Livello 1 boyscout",
-    },
-  ];
-
   return (
     <ElementsLoaded
       badges={badges}
       points={points}
-      exercise_levels={exercise_levels}
+      exercise_levels={exercises_levels}
       experience_levels={experience_levels}
     />
   )

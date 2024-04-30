@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useState } from "react";
-import { ExerciseLevel, ExperienceLevel } from "./types";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { ExerciseLevel, ExperienceLevel, ExperienceLevelJson } from "./types";
 import {
   SectionDescription,
   SectionTitle,
@@ -11,12 +11,16 @@ import {
   ThCell,
 } from "./utils";
 import { Pen, Bin, PlusRound } from "../Icons";
+import { createExpLevelApi, deleteExecLvlApi, deleteExpLvlApi, modifyExpLevelApi } from "@/utils/callKnownApi";
+import { useCustomUserContext } from "@/app/context/userStore";
 
 const exerciseSubmit: (
   setExerciseLevelModifying: (s: string) => void,
-  level_to_modify?: string
+  setExecLevel: Dispatch<SetStateAction<ExerciseLevel[]>>,
+  level_to_modify?: string,
+  accessToken?: string
 ) => React.FormEventHandler<HTMLFormElement> =
-  (setExerciseLevelModifying, level_to_modify) => (event) => {
+  (setExerciseLevelModifying, setExecLevel, level_to_modify, accessToken) => (event) => {
     event.preventDefault();
 
     const target = event.target as typeof event.target & {
@@ -28,45 +32,77 @@ const exerciseSubmit: (
     const game = target.game.value;
     const name = target.name.value;
 
-    // TODO API
-    // TODO differientate between modify and new level (level_to_modify)
-    alert(JSON.stringify({ n, game, name }));
+    const level: ExperienceLevelJson = {
+      n: +n,
+      name: name
+    }
 
-    setExerciseLevelModifying("");
-    // @ts-expect-error
-    target.reset();
+    // if (!level_to_modify) {
+    //   createExerciseLevelApi(level, accessToken, (level) => {
+    //     setExecLevel(prev => [...prev, level])
+    //     setExerciseLevelModifying("");
+    //     // @ts-expect-error
+    //     target.reset();
+    //   })
+    // } else {
+    //   modifyExerciseLevelApi(level_to_modify, level, accessToken, (level) => {
+    //     setExecLevel(prev => prev.map(l => l._id == level_to_modify ? level : l))
+    //     setExerciseLevelModifying("");
+    //     // @ts-expect-error
+    //     target.reset();
+    //   })
+    // }
   };
 
 const experienceSubmit: (
   setExperienceLevelModifying: (s: string) => void,
-  level_to_modify?: string
+  setExpLvl: Dispatch<SetStateAction<ExperienceLevel[]>>,
+  level_to_modify?: string,
+  accessToken?: string
 ) => React.FormEventHandler<HTMLFormElement> =
-  (setExperienceLevelModifying, level_to_modify) => (event) => {
+  (setExperienceLevelModifying, setExpLvl, level_to_modify, accessToken) => (event) => {
     event.preventDefault();
 
     const target = event.target as typeof event.target & {
       n: HTMLInputElement;
       name: HTMLInputElement;
     };
-    const n = target.n.value;
+    const n = +target.n.value;
     const name = target.name.value;
 
-    // TODO API
-    // TODO differientate between modify and new level (level_to_modify)
-    alert(JSON.stringify({ n, name }));
+    const expLvl: ExperienceLevelJson = {
+      n: n,
+      name: name
+    }
 
-    setExperienceLevelModifying("");
-    // @ts-expect-error
-    target.reset();
+    if (!level_to_modify) {
+      createExpLevelApi(expLvl, accessToken, (expLvl) => {
+        setExpLvl(prev => [...prev, expLvl])
+        setExperienceLevelModifying("");
+        // @ts-expect-error
+        target.reset();
+      })
+    } else {
+      modifyExpLevelApi(level_to_modify, expLvl, accessToken, (expLvl) => {
+        setExpLvl(prev => prev.map(l => l._id == level_to_modify ? expLvl : l))
+        setExperienceLevelModifying("");
+        // @ts-expect-error
+        target.reset();
+      })
+    }
   };
 
 function ExerciseLevelRow({
   level,
   setExerciseLevelModifying,
+  setExecLevel
 }: {
   level: ExerciseLevel;
   setExerciseLevelModifying: (level_name: string) => void;
+  setExecLevel: Dispatch<SetStateAction<ExerciseLevel[]>>,
 }) {
+  const {accessToken} = useCustomUserContext();
+
   return (
     <tr>
       <TdCell>{level.n}</TdCell>
@@ -75,15 +111,14 @@ function ExerciseLevelRow({
       <td>
         <div className="flex items-center">
           <div
-            onClick={() => setExerciseLevelModifying(level.name)}
+            onClick={() => setExerciseLevelModifying(level._id)}
             className="h-10 aspect-square hover:scale-110"
           >
             <Pen />
           </div>
           <div
             onClick={() => {
-              // TODO API
-              alert(`Delete level: ${level.name}`);
+              deleteExecLvlApi("", level._id, accessToken, () => setExecLevel(prev => prev.filter(l => l._id !== level._id)))
             }}
             className="h-10 aspect-square hover:scale-110"
           >
@@ -98,10 +133,14 @@ function ExerciseLevelRow({
 function ExperienceLevelRow({
   level,
   setExperienceLevelModifying,
+  setExpLvl
 }: {
   level: ExperienceLevel;
   setExperienceLevelModifying: (level_name: string) => void;
+  setExpLvl: Dispatch<SetStateAction<ExperienceLevel[]>>,
 }) {
+  const {accessToken} = useCustomUserContext();
+
   return (
     <tr>
       <TdCell>{level.n}</TdCell>
@@ -116,8 +155,7 @@ function ExperienceLevelRow({
           </div>
           <div
             onClick={() => {
-              // TODO API
-              alert(`Delete level: ${level.name}`);
+              deleteExpLvlApi(level._id, accessToken, () => setExpLvl(prev => prev.filter(l => l._id !== level._id)))
             }}
             className="h-10 aspect-square hover:scale-110"
           >
@@ -132,11 +170,14 @@ function ExperienceLevelRow({
 function ModifyExerciseLevelRow({
   level,
   setExerciseLevelModifying,
+  setExecLevel
 }: {
   level?: ExerciseLevel;
   setExerciseLevelModifying: (level_name: string) => void;
+  setExecLevel: Dispatch<SetStateAction<ExerciseLevel[]>>,
 }) {
   const form_id = level ? "modify-exercise-form" : "new-exercise-form";
+  const {accessToken} = useCustomUserContext();
 
   return (
     <tr>
@@ -180,7 +221,7 @@ function ModifyExerciseLevelRow({
       <td>
         <form
           id={form_id}
-          onSubmit={exerciseSubmit(setExerciseLevelModifying)}
+          onSubmit={exerciseSubmit(setExerciseLevelModifying, setExecLevel, accessToken)}
           className="m-2 flex items-center"
         >
           <button type="submit" className="h-10 aspect-square hover:scale-110">
@@ -195,11 +236,14 @@ function ModifyExerciseLevelRow({
 function ModifyExperienceLevelRow({
   level,
   setExperienceLevelModifying,
+  setExpLvl
 }: {
   level?: ExperienceLevel;
   setExperienceLevelModifying: (level_name: string) => void;
+  setExpLvl: Dispatch<SetStateAction<ExperienceLevel[]>>,
 }) {
   const form_id = level ? "modify-experience-form" : "new-experience-form";
+  const {accessToken} = useCustomUserContext();
 
   return (
     <tr>
@@ -231,7 +275,7 @@ function ModifyExperienceLevelRow({
       <td>
         <form
           id={form_id}
-          onSubmit={experienceSubmit(setExperienceLevelModifying)}
+          onSubmit={experienceSubmit(setExperienceLevelModifying, setExpLvl, level?._id, accessToken)}
           className="m-2 flex items-center"
         >
           <button type="submit" className="h-10 aspect-square hover:scale-110">
@@ -253,6 +297,12 @@ export function Levels({
   const [exercise_level_modifying, setExerciseLevelModifying] = useState("");
   const [experience_level_modifying, setExperienceLevelModifying] =
     useState("");
+  const [currentExpLevels, setCurrentExpLevels] = useState<ExperienceLevel[]>(experience_levels ?? []);
+  const [currentExecLevels, setCurrentExecLevels] = useState<ExerciseLevel[]>(exercise_levels ?? []);
+
+  useEffect(() => {
+    setCurrentExpLevels(experience_levels)
+  }, [experience_levels])
 
   return (
     <section>
@@ -280,10 +330,11 @@ export function Levels({
         </thead>
         <tbody>
           {exercise_levels.map((level) => {
-            if (exercise_level_modifying === level.name)
+            if (exercise_level_modifying === level._id)
               return (
                 <ModifyExerciseLevelRow
                   setExerciseLevelModifying={setExerciseLevelModifying}
+                  setExecLevel={setCurrentExecLevels}
                   level={level}
                 />
               );
@@ -293,10 +344,12 @@ export function Levels({
                 key={level.name}
                 level={level}
                 setExerciseLevelModifying={setExerciseLevelModifying}
+                setExecLevel={setCurrentExecLevels}
               />
             );
           })}
           <ModifyExerciseLevelRow
+            setExecLevel={setCurrentExecLevels}
             setExerciseLevelModifying={setExerciseLevelModifying}
           />
         </tbody>
@@ -317,11 +370,12 @@ export function Levels({
           </tr>
         </thead>
         <tbody>
-          {experience_levels.map((level) => {
-            if (experience_level_modifying === level.name)
+          {currentExpLevels.map((level) => {
+            if (experience_level_modifying === level._id)
               return (
                 <ModifyExperienceLevelRow
                   setExperienceLevelModifying={setExperienceLevelModifying}
+                  setExpLvl={setCurrentExpLevels}
                   level={level}
                 />
               );
@@ -331,10 +385,12 @@ export function Levels({
                 key={level.name}
                 level={level}
                 setExperienceLevelModifying={setExperienceLevelModifying}
+                setExpLvl={setCurrentExpLevels}
               />
             );
           })}
           <ModifyExperienceLevelRow
+            setExpLvl={setCurrentExpLevels}
             setExperienceLevelModifying={setExperienceLevelModifying}
           />
         </tbody>
