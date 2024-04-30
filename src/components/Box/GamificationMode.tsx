@@ -5,11 +5,13 @@ import { Bin, Copy, Pen } from "../Icons";
 
 const known_levels: ExerciseLevel[] = [
   {
+    _id: "1",
     n: 3,
     name: "Nome gioco 1",
     game: "Gioco 1",
   },
   {
+    _id: "2",
     n: 5,
     name: "Nome gioco 2",
     game: "Gioco 2",
@@ -309,6 +311,7 @@ function LevelDefinitionModal(props: {
 
   const [level, setLevel] = useState<ExerciseLevel>({
     // @ts-ignore
+    _id: "a",
     n: 1,
     game: "",
     name: "",
