@@ -35,11 +35,11 @@ export default function ClientPage() {
     is_error: experience_levels_error
   } = useExpLevelsApiQuery();
 
-  const { 
-    data: exercises_levels = [] as ExerciseLevel[],
-    is_loading: exercises_levels_loading,
-    is_error: exercises_levels_error
-  } = useExecLevelsApiQuery(); // TODO: setta
+  // const { 
+  //   data: exercises_levels = [] as ExerciseLevel[],
+  //   is_loading: exercises_levels_loading,
+  //   is_error: exercises_levels_error
+  // } = useExecLevelsApiQuery(); // TODO: setta
 
   // // TODO API
   // const badges: Badge[] = [
@@ -66,7 +66,7 @@ export default function ClientPage() {
     <ElementsLoaded
       badges={badges}
       points={points}
-      exercise_levels={exercises_levels}
+      exercise_levels={[]/*exercises_levels*/}
       experience_levels={experience_levels}
     />
   )
