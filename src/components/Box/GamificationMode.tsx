@@ -5,20 +5,20 @@ import { Bin, Copy, Pen } from "../Icons";
 
 const known_levels: ExerciseLevel[] = [
   {
-    _id: "1",
     n: 3,
-    name: "Nome gioco 1",
-    game: "Gioco 1",
+    exercises: [],
+    enabled: false,
+    mode: 0
   },
   {
-    _id: "2",
     n: 5,
-    name: "Nome gioco 2",
-    game: "Gioco 2",
+    exercises: [],
+    enabled: false,
+    mode: 0
   },
 ];
 
-function ExerciseLevel(props: {
+export function ExerciseLevel(props: {
   level: ExerciseLevel;
   setLevel: React.Dispatch<React.SetStateAction<ExerciseLevel>>;
   known_levels: ExerciseLevel[];
@@ -33,9 +33,9 @@ function ExerciseLevel(props: {
         <select
           onChange={(event) => {
             const value = event.target.value;
-            setLevel(known_levels.find((l) => l.name === value)!);
+            setLevel(known_levels.find((l) => l.n+"" === value)!);
           }}
-          value={known_levels.find((l) => l.name === level?.name)?.name ?? ""}
+          value={known_levels.find((l) => l.n+"" === level?.n+"")?.n ?? ""}
           className="text-xl text-white p-2 w-1/3 rounded-lg"
           style={{ backgroundColor: "#73B9F9" }}
           onClick={(e) => e.stopPropagation()}
@@ -43,8 +43,8 @@ function ExerciseLevel(props: {
         >
           <option className="max-w-md">Seleziona Esistente</option>
           {known_levels.map((l) => (
-            <option key={l.name} value={l.name}>
-              {l.name}
+            <option key={l.n} value={l.n}>
+              {l.n}
             </option>
           ))}
         </select>
@@ -59,7 +59,6 @@ function ExerciseLevel(props: {
         <thead>
           <tr>
             <ThCell>N° livello</ThCell>
-            <ThCell>Gioco</ThCell>
             <ThCell>Nome</ThCell>
           </tr>
         </thead>
@@ -85,23 +84,7 @@ function ExerciseLevel(props: {
             <TdCell>
               <input
                 type="text"
-                value={level?.game}
-                onChange={(e) =>
-                  setLevel((old) => {
-                    const new_value = e.target.value;
-                    return { ...old, game: new_value };
-                  })
-                }
-                placeholder="Per quale gioco?"
-                id="game"
-                className="w-full"
-                style={{ backgroundColor: "#E6F0F9" }}
-              />
-            </TdCell>
-            <TdCell>
-              <input
-                type="text"
-                value={level?.name}
+                value={level?.n}
                 onChange={(e) =>
                   setLevel((old) => {
                     const new_value = e.target.value;
@@ -253,7 +236,7 @@ function DetailCard(props: {
   );
 }
 
-function ExerciseDetails(props: {
+export function ExerciseDetails(props: {
   details: ExerciseDetails[];
   setDetails: React.Dispatch<React.SetStateAction<ExerciseDetails[]>>;
 }) {

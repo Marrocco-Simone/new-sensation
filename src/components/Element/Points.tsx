@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Point } from "./types";
 import {
   SectionDescription,
@@ -11,12 +11,16 @@ import {
   ThCell,
 } from "./utils";
 import { Bin, Pen, PlusRound } from "../Icons";
+import { useCustomUserContext } from "@/app/context/userStore";
+import { createPointApi, deletePointApi, modifyPointApi } from "@/utils/callKnownApi";
 
 const pointSubmit: (
   setPointModifying: (s: string) => void,
-  point_to_modify?: string
+  setPoints: Dispatch<SetStateAction<Point[]>>,
+  point_to_modify?: string,
+  accessToken?: string
 ) => React.FormEventHandler<HTMLFormElement> =
-  (setPointModifying, point_to_modify) => (event) => {
+  (setPointModifying, setPoints, point_to_modify, accessToken) => (event) => {
     event.preventDefault();
 
     const target = event.target as typeof event.target & {
@@ -24,37 +28,47 @@ const pointSubmit: (
       quantity: HTMLInputElement;
     };
     const name = target.name.value;
-    const quantity = target.quantity.value;
+    const quantity = +target.quantity.value;
 
-    // TODO API
-    // TODO differientate between modify and new point (point_to_modify)
-    alert(JSON.stringify({ name, quantity }));
-
-    setPointModifying("");
-    // @ts-expect-error
-    target.reset();
+    if (!point_to_modify) {
+      createPointApi({name, quantity}, accessToken, (point) => {
+        setPoints(prev => [...prev, point])
+        setPointModifying("");
+        // @ts-expect-error
+        target.reset();
+      })
+    } else {
+      modifyPointApi(point_to_modify, {name, quantity}, accessToken, (point) => {
+        setPoints(prev => prev.map(l => l._id == point_to_modify ? point : l))
+        setPointModifying("");
+        // @ts-expect-error
+        target.reset();
+      })
+    }
   };
 
 function PointRow({
   point,
   setPointModifying,
+  setPoints
 }: {
   point: Point;
   setPointModifying: (point_name: string) => void;
+  setPoints: Dispatch<SetStateAction<Point[]>>,
 }) {
+  const {accessToken} = useCustomUserContext();
   return (
     <tr>
       <TdCell>{point.name}</TdCell>
       <TdCell>{point.quantity}</TdCell>
       <td>
         <div className="flex items-center">
-          <div onClick={() => setPointModifying(point.name)} className="h-10 aspect-square hover:scale-110">
+          <div onClick={() => setPointModifying(point._id)} className="h-10 aspect-square hover:scale-110">
             <Pen />
           </div>
           <div
             onClick={() => {
-              // TODO API
-              alert(`Delete point: ${point.name}`);
+              deletePointApi(point._id, accessToken, () => setPoints(prev => prev.filter(l => l._id !== point._id)))
             }}
             className="h-10 aspect-square hover:scale-110"
           >
@@ -69,11 +83,14 @@ function PointRow({
 function ModifyPointRow({
   point,
   setPointModifying,
+  setPoints
 }: {
   point?: Point;
   setPointModifying: (point_name: string) => void;
+  setPoints: Dispatch<SetStateAction<Point[]>>,
 }) {
   const form_id = point ? "modify-point-form" : "new-point-form";
+  const {accessToken} = useCustomUserContext();
 
   return (
     <tr>
@@ -105,7 +122,7 @@ function ModifyPointRow({
       <td>
         <form
           id={form_id}
-          onSubmit={pointSubmit(setPointModifying, point?.name)}
+          onSubmit={pointSubmit(setPointModifying, setPoints, point?._id, accessToken)}
           className="m-2 flex items-center"
         >
           <button type="submit" className="h-10 aspect-square hover:scale-110">
@@ -119,6 +136,11 @@ function ModifyPointRow({
 
 export function Points({ points }: { points: Point[] }) {
   const [point_modifying, setPointModifying] = useState("");
+  const [currentPoints, setCurrentPoints] = useState<Point[]>(points ?? []);
+
+  useEffect(() => {
+    setCurrentPoints(points)
+  }, [points])
 
   return (
     <section>
@@ -143,11 +165,12 @@ export function Points({ points }: { points: Point[] }) {
           </tr>
         </thead>
         <tbody>
-          {points.map((point) => {
-            if (point.name === point_modifying)
+          {currentPoints.map((point) => {
+            if (point._id === point_modifying)
               return (
                 <ModifyPointRow
                   setPointModifying={setPointModifying}
+                  setPoints={setCurrentPoints}
                   point={point}
                 />
               );
@@ -156,11 +179,12 @@ export function Points({ points }: { points: Point[] }) {
               <PointRow
                 point={point}
                 setPointModifying={setPointModifying}
+                setPoints={setCurrentPoints}
                 key={point.name}
               />
             );
           })}
-          <ModifyPointRow setPointModifying={setPointModifying} />
+          <ModifyPointRow setPointModifying={setPointModifying} setPoints={setCurrentPoints}/>
         </tbody>
       </Table>
     </section>

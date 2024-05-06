@@ -11,10 +11,10 @@ import {
 import { NoElementMenu } from "@/components/Menu";
 import { Bin, Copy, DocumentPlus, Pen } from "@/components/Icons";
 import { CreateRuleMenu } from "@/components/Menu/CreateRuleMenu";
-import { CreateGameModal } from "@/components/Modal";
 import VocabularyFilter from "@/components/VocabularyFilter";
 import { useRulesApiQuery, useVocabularyApiQuery } from "@/hooks/useKnownApiQuery";
 import { useCustomUserContext } from "../context/userStore";
+import { CreateGameModal } from "@/components/Modal/CreateGameModal";
 
 function RulesLoaded(props: {
   rules: Rule[];

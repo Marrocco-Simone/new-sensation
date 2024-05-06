@@ -16,9 +16,9 @@ export function TableTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function Table({ children }: { children: React.ReactNode }) {
+export function Table({ children, margin = true }: { children: React.ReactNode, margin?: boolean }) {
   return (
-    <table className="text-xl my-4 mx-auto w-10/12 table-fixed">
+    <table className={"text-xl my-4 "+ (margin ? "mx-auto " : "") + "w-10/12 table-fixed"}>
       {children}
     </table>
   );

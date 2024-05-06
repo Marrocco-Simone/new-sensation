@@ -11,7 +11,8 @@ import Swal from "sweetalert2";
 import wrapApiCallInWaitingSwal from "./wrapApiCallInWaitingSwal";
 import { apiDelete, apiPost, apiPut } from "@/services/api";
 import waitForConfirmSwal from "./waitForConfirmSwal";
-import { Badge, BadgeJson, ExerciseLevel, ExperienceLevel, ExperienceLevelJson } from "@/components/Element/types";
+import { Badge, BadgeJson, ExerciseLevel, ExperienceLevel, ExperienceLevelJson, Game, GameJson, Point, PointJson } from "@/components/Element/types";
+import { ApiError } from "@/services/api/api";
 
 export function createRuleApi(
   rule: Rule,
@@ -86,7 +87,7 @@ export function createTaskApi(
   rules_id: string[],
   access_token?: string,
   reloadData?: () => void,
-  onSuccessCallback?: () => void
+  onSuccessCallback?: (task?: TaskJson) => void
 ) {
   const new_task: CreateTaskJson = {
     name,
@@ -100,7 +101,7 @@ export function createTaskApi(
         Swal.fire("Gioco creato", res.data?.name, "success");
       }
 
-      onSuccessCallback?.();
+      onSuccessCallback?.(res.data);
       
       if (reloadData) reloadData();
     }
@@ -144,7 +145,7 @@ export function createBadgeApi(
   reloadData?: (badge: Badge) => void
 ) {
   wrapApiCallInWaitingSwal(
-    () => apiPost<Badge>("http://localhost:5001/badge/add", badge, access_token),
+    () => apiPost<Badge>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/badge/add", badge, access_token),
     (res) => {
       Swal.fire("Badge creato", res.data?.name, "success");
       if (reloadData && res.data) reloadData(res.data);
@@ -159,7 +160,7 @@ export function modifyBadgeApi(
   reloadData?: (badge: Badge) => void
 ) {
   wrapApiCallInWaitingSwal(
-    () => apiPut<Badge>("http://localhost:5001/badge/"+badge_id, badge, access_token),
+    () => apiPut<Badge>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/badge/"+badge_id, badge, access_token),
     (res) => {
       Swal.fire("Badge modificato", res.data?.name, "success");
       if (reloadData && res.data) reloadData(res.data);
@@ -173,7 +174,7 @@ export function deleteBadgeApi(
   reloadData?: () => void
 ) {
   wrapApiCallInWaitingSwal(
-    () => apiDelete<null>("http://localhost:5001/badge/"+badge_id, access_token),
+    () => apiDelete<null>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/badge/"+badge_id, access_token),
     (res) => {
       Swal.fire("Badge cancellato", "success");
       if (reloadData) reloadData();
@@ -187,7 +188,7 @@ export function createExpLevelApi(
   reloadData?: (expLvl: ExperienceLevel) => void
 ) {
   wrapApiCallInWaitingSwal(
-    () => apiPost<ExperienceLevel>("http://localhost:5001/levels",exp_lvl, access_token),
+    () => apiPost<ExperienceLevel>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/levels",exp_lvl, access_token),
     (res) => {
       Swal.fire("Livello esperienza "+ res.data?.name +" aggiunto", "success");
       if (reloadData && res.data) reloadData(res.data);
@@ -202,7 +203,7 @@ export function modifyExpLevelApi(
   reloadData?: (expLvl: ExperienceLevel) => void
 ) {
   wrapApiCallInWaitingSwal(
-    () => apiPut<ExperienceLevel>("http://localhost:5001/levels/"+exp_lvl_id ,exp_lvl, access_token),
+    () => apiPut<ExperienceLevel>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/levels/"+exp_lvl_id ,exp_lvl, access_token),
     (res) => {
       Swal.fire("Livello esperienza "+ res.data?.name +" aggiunto", "success");
       if (reloadData && res.data) reloadData(res.data);
@@ -216,7 +217,7 @@ export function deleteExpLvlApi(
   reloadData?: () => void
 ) {
   wrapApiCallInWaitingSwal(
-    () => apiDelete<null>("http://localhost:5001/levels/"+exp_lvl_id, access_token),
+    () => apiDelete<null>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/levels/"+exp_lvl_id, access_token),
     (res) => {
       Swal.fire("Livello esperienza cancellato", "success");
       if (reloadData) reloadData();
@@ -231,7 +232,7 @@ export function createExerciseLevelApi(
   reloadData?: (expLvl: ExperienceLevel) => void
 ) {
   wrapApiCallInWaitingSwal(
-    () => apiPost<ExperienceLevel>("http://localhost:5001/games/"+game_id+"/levels", exc_lvl, access_token),
+    () => apiPost<ExperienceLevel>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/games/"+game_id+"/levels", exc_lvl, access_token),
     (res) => {
       Swal.fire("Livello esercizio "+ res.data?.name +" aggiunto", "success");
       if (reloadData && res.data) reloadData(res.data);
@@ -241,14 +242,78 @@ export function createExerciseLevelApi(
 
 export function deleteExecLvlApi(
   game_id: string,
-  exp_lvl_id: string,
+  exec_lvl_id: number,
   access_token?: string,
   reloadData?: () => void
 ) {
   wrapApiCallInWaitingSwal(
-    () => apiDelete<null>("http://localhost:5001/games/"+game_id+"/levels/"+exp_lvl_id, access_token),
+    () => apiDelete<null>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/games/"+game_id+"/levels/"+exec_lvl_id, access_token),
     (res) => {
       Swal.fire("Livello esperienza cancellato", "success");
+      if (reloadData) reloadData();
+    }
+  );
+}
+
+export function createGameApi(
+  rules_id: string[],
+  game: Omit<Game, '_id'>,
+  access_token?: string,
+  reloadData?: () => void,
+  errorCallback?: (err: ApiError) => void
+) {
+  createTaskApi(game.name, rules_id, access_token, undefined, (task) => {
+    let gameModify = {...game};
+    gameModify["externalId"] = task?.id;
+
+    wrapApiCallInWaitingSwal(
+      () => apiPost<null>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/games", gameModify, access_token),
+      (res) => {
+        if (reloadData) reloadData();
+      },
+      (err) => errorCallback?.(err)
+    );
+  });
+}
+
+export function createPointApi(
+  point: PointJson,
+  access_token?: string,
+  reloadData?: (expLvl: Point) => void
+) {
+  wrapApiCallInWaitingSwal(
+    () => apiPost<Point>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/points", point, access_token),
+    (res) => {
+      Swal.fire("Punti esperienza "+ res.data?.name +" aggiunto", "success");
+      if (reloadData && res.data) reloadData(res.data);
+    }
+  );
+}
+
+export function modifyPointApi(
+  point_id: string,
+  point: PointJson,
+  access_token?: string,
+  reloadData?: (expLvl: Point) => void
+) {
+  wrapApiCallInWaitingSwal(
+    () => apiPut<Point>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/points/"+point_id, point, access_token),
+    (res) => {
+      Swal.fire("Punto esperienza aggiornato", "success");
+      if (reloadData && res.data) reloadData(res.data);
+    }
+  );
+}
+
+export function deletePointApi(
+  point_id: string,
+  access_token?: string,
+  reloadData?: () => void
+) {
+  wrapApiCallInWaitingSwal(
+    () => apiDelete<null>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/points/" + point_id, access_token),
+    (res) => {
+      Swal.fire("Punto esperienza cancellato", "success");
       if (reloadData) reloadData();
     }
   );
