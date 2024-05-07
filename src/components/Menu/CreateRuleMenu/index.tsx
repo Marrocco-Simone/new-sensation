@@ -22,7 +22,7 @@ function checkBlocks(blocks: (Block | null)[], metas: VocabularyMetadata[]) {
     }
 
     blockParams.forEach(param => {
-      if ((param.type === "PARAM_INTEGER" || param.type === "PARAM_STRING") && param.value === null) {
+      if ((param.type === "PARAM_INTEGER" || param.type === "PARAM_STRING" || param.type === "PARAM_OPEN_STRING") && param.value === null) {
         throw new Error("Qualche primitiva non ha tutte le specifiche compilate!")
       }
       if (param.type === "PARAM_CLASS" && param.choice === undefined) {

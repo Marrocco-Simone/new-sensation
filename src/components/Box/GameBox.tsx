@@ -46,11 +46,19 @@ export function GameBox(props: {
           password: "melaC-melaV",
           smarter: "smarter_fbk_" + smarterId,
         },
+        SmartGameStateReader: {
+          protocol: "http",
+          domain: "127.0.0.1:5001",
+          accessToken: accessToken,
+          entityId: "6633815873dda3de0aa92f9a",
+          gameId: "6639b495d866cb8c6dd7e63c",
+          mode: 3
+        },
       };
     }
 
     return conf;
-  }, [smarterId, vocabularies_metadata]);
+  }, [smarterId, vocabularies_metadata, accessToken]);
 
   function createNewInstance() {
     wrapApiCallInWaitingSwal(

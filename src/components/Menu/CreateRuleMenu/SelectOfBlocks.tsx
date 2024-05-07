@@ -22,6 +22,9 @@ export default function SelectOfBlocks(props: {
         case "PARAM_STRING":
           s += "<stringa> ";
           break;
+        case "PARAM_OPEN_STRING":
+          s += "<stringa> ";
+          break;
         case "PARAM_CLASS":
           s += "<tipo> ";
           break;

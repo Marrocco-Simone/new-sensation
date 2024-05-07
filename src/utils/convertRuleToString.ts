@@ -18,6 +18,10 @@ function convertBlockToString(b: Block | undefined): string {
         if (t.label.type !== "PARAM_STRING") throw new Error();
         s += t.value;
         break;
+      case "PARAM_OPEN_STRING":
+        if (t.label.type !== "PARAM_OPEN_STRING") throw new Error();
+        s += t.value;
+        break;
       case "PARAM_CLASS":
         if (t.label.type !== "PARAM_CLASS") throw new Error();
         s += convertBlockToString(t.choice);

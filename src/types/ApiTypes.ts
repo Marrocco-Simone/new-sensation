@@ -32,6 +32,10 @@ export type BlockParam =
       values: string[];
     }
   | {
+      type: "PARAM_OPEN_STRING";
+      value: string;
+    }
+  | {
       type: "PARAM_INTEGER";
       values: number[];
     };

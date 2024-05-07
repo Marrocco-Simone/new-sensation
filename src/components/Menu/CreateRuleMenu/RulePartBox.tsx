@@ -3,6 +3,7 @@ import React from "react";
 import SelectOfStrings from "./SelectOfStrings";
 import SelectOfBlocks from "./SelectOfBlocks";
 import { Bin } from "../../Icons";
+import InputString from "./InputString";
 
 function AddBlockButton(props: {
   setArray: React.Dispatch<React.SetStateAction<(Block | null)[]>>;
@@ -89,6 +90,9 @@ export default function RulePartBox(props: {
       case "PARAM_STRING":
         new_t.value = new_value;
         break;
+      case "PARAM_OPEN_STRING":
+        new_t.value = new_value;
+        break;
       case "PARAM_CLASS":
         new_t.choice = findBlock(new_value);
         break;
@@ -109,6 +113,9 @@ export default function RulePartBox(props: {
         new_t.value = undefined;
         break;
       case "PARAM_STRING":
+        new_t.value = undefined;
+        break;
+      case "PARAM_OPEN_STRING":
         new_t.value = undefined;
         break;
       case "PARAM_CLASS":
@@ -191,6 +198,31 @@ export default function RulePartBox(props: {
                 blocks={blocks}
                 std_text="<stringa>"
                 options={t.label.values}
+                onChange={(value) =>
+                  addBlockChoice(b, t_index, value, valueIsChanged)
+                }
+              />
+            );
+
+          break;
+        case "PARAM_OPEN_STRING":
+          if (t.label.type !== "PARAM_OPEN_STRING") throw new Error();
+          
+          if (array.length-1 > t_index)
+            elements.push(
+              <WrapNodeInClickableDiv
+                key={t_index}
+                onClick={() => resetBlockChoice(b, t_index, valueIsChanged)}
+              >
+                {t.value}
+              </WrapNodeInClickableDiv>
+            );
+          else
+            elements.push(
+              <InputString
+                key={t_index}
+                blocks={blocks}
+                std_text="<stringa>"
                 onChange={(value) =>
                   addBlockChoice(b, t_index, value, valueIsChanged)
                 }

@@ -21,6 +21,11 @@ export type BlockText =
       label: BlockLabel;
       type: "PARAM_INTEGER";
       value?: number;
+    }
+  | {
+      label: BlockLabel;
+      type: "PARAM_OPEN_STRING";
+      value?: string;
     };
 
 export type Block = {
