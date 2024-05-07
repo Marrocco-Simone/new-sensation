@@ -26,7 +26,7 @@ ENV NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
 ARG AUTH0_AUDIENCE=https://smarter.com
 ARG AUTH0_SCOPE="openid profile email"
 ARG AUTH0_ISSUER_BASE_URL=https://smarter.eu.auth0.com
-ARG NEXT_PUBLIC_SMARTGAME_URL=https://core.smartergame.smartcommunitylab.it
+ARG NEXT_PUBLIC_SMARTGAME_URL="https://backend-smartgame.polyglot-edu.com/api"
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
