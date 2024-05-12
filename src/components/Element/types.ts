@@ -1,12 +1,14 @@
 export type Badge = {
   _id: string,
   name: string,
-  description: string
+  description: string,
+  classes: string[]
 }
 
 export type BadgeJson = {
   name: string,
-  description: string
+  description: string,
+  classes: string[]
 }
 
 export type PointJson = {

@@ -27,11 +27,13 @@ const badgeSubmit: (
     const target = event.target as typeof event.target & {
       name: HTMLInputElement;
       description: HTMLInputElement;
+      classes: HTMLInputElement;
     };
     const name = target.name.value;
     const description = target.description.value;
+    const classes = target.classes.value.split(",");
 
-    const badge: BadgeJson = {name: name, description: description};
+    const badge: BadgeJson = {name: name, description: description, classes: classes};
 
     if (!badge_to_modify) {
       createBadgeApi(badge, accessToken, (badge) => {
@@ -121,6 +123,18 @@ function ModifyBadgeRow({
           required
         />
       </TdCell>
+      <TdCell>
+        <input
+          type="text"
+          defaultValue={badge?.name}
+          placeholder="Inserisci il nome delle classi separate da virgola"
+          id="classes"
+          form={form_id}
+          className="w-full"
+          style={{ backgroundColor: "#E6F0F9" }}
+          required
+        />
+      </TdCell>
       <td>
         <form
           id={form_id}
@@ -166,6 +180,7 @@ export function Badges({ badges }: { badges: Badge[] }) {
           <tr>
             <ThCell>Nome</ThCell>
             <ThCell>Descrizione</ThCell>
+            <ThCell>Classi</ThCell>
             <th></th>
           </tr>
         </thead>
