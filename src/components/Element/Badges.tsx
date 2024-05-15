@@ -67,6 +67,7 @@ function BadgeRow({
     <tr>
       <TdCell>{badge.name}</TdCell>
       <TdCell>{badge.description}</TdCell>
+      <TdCell>{badge.classes.join(",")}</TdCell>
       <td>
         <div className="flex items-center">
           <div onClick={() => setBadgeModifying(badge._id)} className="h-10 aspect-square hover:scale-110">
