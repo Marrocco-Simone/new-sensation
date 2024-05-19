@@ -140,7 +140,7 @@ export function GameLevelDefinition(props: {
   function addNewLevel() {
     setGame(prev => {
       let gameModify = {...prev};
-      gameModify.levels.push({n: filteredLevels.length+1, mode: GamificationModesMapping[mode], exercises: [], enabled: false})
+      gameModify.levels.push({n: filteredLevels.length+1, mode: GamificationModesMapping[mode], exercises: [], enabled: filteredLevels.length == 0})
       return {...gameModify};
     })
   }
