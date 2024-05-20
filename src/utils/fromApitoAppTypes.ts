@@ -276,6 +276,11 @@ export function convertRuleToRuleJson(
   for (const b of rule.do)
     vocabularies.push(findIdOfVocabulary(b.vocabulary, vocabularies_metadata));
 
+  vocabularies.push(findIdOfVocabulary(
+    andBlock.vocabulary,
+    vocabularies_metadata
+  ));
+
   const createRuleJson: CreateRuleJson = {
     name: rule.name,
     vocabularies,
