@@ -33,7 +33,7 @@ export type BlockParam =
     }
   | {
       type: "PARAM_OPEN_STRING";
-      value: string;
+      url: string;
     }
   | {
       type: "PARAM_INTEGER";

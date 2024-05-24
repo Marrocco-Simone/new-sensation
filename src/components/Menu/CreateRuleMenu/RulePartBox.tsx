@@ -64,8 +64,9 @@ export default function RulePartBox(props: {
   type: BlockType;
   scope: BlockScope;
   single?: boolean;
+  cachedMetadata: any
 }) {
-  const { title, text, blocks, array, setArray, type, scope, single } = props;
+  const { title, text, blocks, array, setArray, type, scope, single, cachedMetadata } = props;
 
   function findBlock(name: string): Block | undefined {
     return blocks.find((b) => b.name === name);
@@ -140,7 +141,7 @@ export default function RulePartBox(props: {
     valueIsChanged(new_b);
   }
 
-  function getBlockElements(b: Block, valueIsChanged: (new_b: Block) => void) {
+  function getBlockElements(block_index: number, b: Block, valueIsChanged: (new_b: Block) => void) {
     const elements: React.ReactNode[] = [];
 
     let curr_t_index = 0;
@@ -165,7 +166,7 @@ export default function RulePartBox(props: {
                 {t.value}
               </WrapNodeInClickableDiv>
             );
-          else
+          else 
             elements.push(
               <SelectOfStrings
                 key={t_index}
@@ -207,8 +208,8 @@ export default function RulePartBox(props: {
           break;
         case "PARAM_OPEN_STRING":
           if (t.label.type !== "PARAM_OPEN_STRING") throw new Error();
-          
-          if (array.length-1 > t_index)
+
+          if ((t.label.url !== undefined && t.value) || (array.length-1 > block_index && t.value !== undefined))
             elements.push(
               <WrapNodeInClickableDiv
                 key={t_index}
@@ -217,6 +218,19 @@ export default function RulePartBox(props: {
                 {t.value}
               </WrapNodeInClickableDiv>
             );
+          else if (!!t.label.url) {
+            elements.push(
+              <SelectOfStrings
+                key={t_index}
+                blocks={blocks}
+                std_text="<stringa>"
+                options={cachedMetadata[t.label.url] ?? []}
+                onChange={(value) =>
+                  addBlockChoice(b, t_index, value, valueIsChanged)
+                }
+              />
+            );
+          }
           else
             elements.push(
               <InputString
@@ -240,7 +254,7 @@ export default function RulePartBox(props: {
                 key={t_index}
                 onClick={() => resetBlockChoice(b, t_index, valueIsChanged)}
               >
-                {getBlockElements(t.choice, (new_choice) =>
+                {getBlockElements(block_index, t.choice, (new_choice) =>
                   passChildBlockUpdate(b, t_index, new_choice, valueIsChanged)
                 )}
               </WrapNodeInClickableDiv>
@@ -345,7 +359,7 @@ export default function RulePartBox(props: {
 
       elements.push(
         <WrapNodeInClickableDiv key={b_index} onClick={resetBlock(b_index)}>
-          {getBlockElements(b, modifyBlockOfArray(b_index))}
+          {getBlockElements(curr_b_index, b, modifyBlockOfArray(b_index))}
         </WrapNodeInClickableDiv>
       );
 
@@ -354,7 +368,7 @@ export default function RulePartBox(props: {
 
     return [
       elements,
-      single ? <></> : <AddBlockButton
+      single ? <div key="add-block-button-nothing"></div> : <AddBlockButton
         key={`add-block-button-${type}-${scope}`}
         setArray={setArray}
         type={type}

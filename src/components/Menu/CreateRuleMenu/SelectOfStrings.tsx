@@ -23,8 +23,8 @@ export default function SelectOfStrings(props: {
       onMouseOver={(e) => e.stopPropagation()}
     >
       <option className="max-w-md">{std_text}</option>
-      {options.map((x) => (
-        <option key={x} value={x}>
+      {options.map((x, index) => (
+        <option key={index} value={x}>
           {x}
         </option>
       ))}

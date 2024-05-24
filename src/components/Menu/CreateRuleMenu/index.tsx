@@ -5,9 +5,11 @@ import {
   VocabularyMetadata,
 } from "@/types";
 import { makeRuleNested } from "@/utils/makeRuleNested";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import RulePartBox from "./RulePartBox";
+import { useCustomUserContext } from "@/app/context/userStore";
+import { apiGet } from "@/services/api";
 
 function checkBlocks(blocks: (Block | null)[], metas: VocabularyMetadata[]) {
   for (const block of blocks) {
@@ -65,6 +67,38 @@ export function CreateRuleMenu(props: {
     starting_values?.doArray ?? [null]
   );
   const [name, setName] = useState(starting_values?.name ?? "");
+  
+  const { accessToken } = useCustomUserContext();
+  const [cachedMetadata, setCachedMetadata] = useState<any>({});
+
+  useEffect(() => {
+    const urls = new Set((blocks.map(b => {
+      const labels = b.text.filter(t => t.type === "PARAM_OPEN_STRING")
+
+      if (labels.length === 1 && labels[0].label.type === "PARAM_OPEN_STRING") {
+        return labels[0].label.url;
+      }
+
+      return "";
+    }).filter(b => !!b) as string[]));
+
+    urls.forEach(async url => {
+      if (!cachedMetadata[url]) {
+        const resp = await apiGet<string[]>(url, accessToken);
+        if (resp.status === "success") {
+          setCachedMetadata((prev: any) => {
+            let copy = {...prev};
+            if (resp.data) {
+              copy[url] = resp.data;
+            }
+            return copy;
+          });
+        } else {
+          console.error(resp.message);
+        }
+      }
+    })
+  }, [accessToken, blocks, cachedMetadata])
 
   function resetFields() {
     setWhenArray([null]);
@@ -126,6 +160,7 @@ export function CreateRuleMenu(props: {
           type="STATE"
           scope="WHEN"
           single={true}
+          cachedMetadata={cachedMetadata}
         />
         <RulePartBox
           title="Stato"
@@ -135,6 +170,7 @@ export function CreateRuleMenu(props: {
           setArray={setWhileArray}
           type="STATE"
           scope="WHILE"
+          cachedMetadata={cachedMetadata}
         />
         <RulePartBox
           title="Azione"
@@ -144,6 +180,7 @@ export function CreateRuleMenu(props: {
           setArray={setDoArray}
           type="ACTION"
           scope="ACTION"
+          cachedMetadata={cachedMetadata}
         />
       </div>
 

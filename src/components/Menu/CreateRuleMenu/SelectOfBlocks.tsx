@@ -47,8 +47,8 @@ export default function SelectOfBlocks(props: {
       onMouseOver={(e) => e.stopPropagation()}
     >
       <option>{std_text}</option>
-      {blocks.map((b) => (
-        <option key={b.name} value={b.name}>
+      {blocks.map((b, index) => (
+        <option key={index} value={b.name}>
           {getBlockString(b)}
         </option>
       ))}
