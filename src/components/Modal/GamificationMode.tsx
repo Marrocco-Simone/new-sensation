@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Exercise, Game, GamificationModes, GamificationModesMapping } from "../Element/types";
+import { CardTypes, Exercise, Game, GamificationModes, GamificationModesMapping } from "../Element/types";
 import { Bin, Copy, Pen, Puzzle } from "../Icons";
 import { useCustomUserContext } from "@/app/context/userStore";
 import { UpArrow } from "../Icons/UpArrow";
@@ -149,7 +149,7 @@ export function GameLevelDefinition(props: {
     setExerciseLevelModifying(GamificationModesMapping[mode]+"-"+levelIndex+"-"+(game.levels[levelIndex].exercises.length))
     setGame(prev => {
       let gameModify = {...prev};
-      gameModify.levels[levelIndex].exercises.push({assignment: "", startSeq: [], endSeq: []});
+      gameModify.levels[levelIndex].exercises.push({assignment: "", startSeq: [], endSeq: [], cardType: "numbers"});
       return {...gameModify};
     })
   }
@@ -264,12 +264,6 @@ export function GameLevelDefinition(props: {
   );
 }
 
-type ExerciseDetails = {
-  assignment: string;
-  start: string[];
-  solution: string[];
-};
-
 function DetailForm(props: {
   initial_detail?: Exercise;
   onSave: (new_detail: Exercise) => void;
@@ -279,6 +273,7 @@ function DetailForm(props: {
   const [assigment, setAssignment] = useState(initial_detail?.assignment)
   const [start, setStart] = useState(initial_detail?.startSeq.join(" "));
   const [solution, setSolution] = useState(initial_detail?.endSeq?.join(" "));
+  const [cardType, setCardType] = useState<CardTypes>("numbers");
 
   return (
     <div className="flex flex-col gap-5 my-4 p-2 w-full">
@@ -318,6 +313,24 @@ function DetailForm(props: {
         />
       </label>
 
+      <label className="flex gap-5 items-center">
+        <p>Tipologia carte</p>
+        <select
+          onChange={(event) => {
+            const value = event.target.value as CardTypes;
+            setCardType(value);
+          }}
+          value={cardType}
+          className="text-xl text-white p-2 my-4 w-1/4 rounded-lg"
+          style={{ backgroundColor: "#73B9F9" }}
+          onClick={(e) => e.stopPropagation()}
+          onMouseOver={(e) => e.stopPropagation()}
+        >
+          <option className="max-w-md" value="numbers">Numeri</option>
+          <option className="max-w-md" value="apples">Mele</option>
+        </select>
+      </label>
+
       <div className="flex self-end w-2/3 justify-end">
         <button
           className="py-1 px-2 mr-2 text-md uppercase text-white hover:scale-105 ease-in-out duration-100 rounded-lg "
@@ -331,7 +344,7 @@ function DetailForm(props: {
           style={{ backgroundColor: "#FF9900" }}
           onClick={(e) => {
             e.preventDefault();
-            onSave({assignment: assigment ?? "", startSeq: start?.split(" ") ?? [], endSeq: solution?.split(" ")})
+            onSave({assignment: assigment ?? "", startSeq: start?.split(" ") ?? [], endSeq: solution?.split(" "), cardType: cardType})
           }}
         >
           Salva esercizio
