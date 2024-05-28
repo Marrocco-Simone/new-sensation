@@ -4,7 +4,7 @@ export const links = {
   elements: "My game elements",
   games: "My games",
   tutorial: "Come funziona",
-  vocabularies: "Gestisci vocabolari"
+  vocabularies: "Manage vocabularies"
 } as const;
 
 export const linksPermissions = {

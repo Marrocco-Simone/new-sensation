@@ -75,8 +75,8 @@ function RulesLoaded(props: {
       <NoElementMenu
         Svg={DocumentPlus}
         svg_dimension="big"
-        title="Nessuna regola creata"
-        text="Crea nuove regole per far giocare i tuoi studenti con SMARTER e SmartGame"
+        title="No rules found"
+        text="Create new rules for your students to play with SMARTER and SmartGame"
         url="./create"
         button_text="Create rule"
       />
@@ -116,8 +116,8 @@ function RulesLoaded(props: {
           <NoElementMenu
             Svg={DocumentPlus}
             svg_dimension="small"
-            title="Nessuna regola trovata"
-            text="Nessuna regola trovata con i filtri selezionati"
+            title="Any rule found"
+            text="No rule found with selected filter"
             url="./create"
             button_text="Create rule"
           />

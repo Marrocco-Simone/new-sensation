@@ -15,7 +15,7 @@ export default withPageAuthorized(function Start() {
 
   return (
     <>
-      <h2 className="text-white">Buongiorno {user.nickname}</h2>
+      <h2 className="text-white">Hi {user.nickname}</h2>
       {Object.keys(links).filter((link) => user?.permissions?.includes(linksPermissions[link as keyof typeof linksPermissions])).map((link) => (
         <RedirectButton
           text={links[link as keyof typeof links]}

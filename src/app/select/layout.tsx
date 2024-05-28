@@ -17,7 +17,7 @@ export default function layout({ children }: { children: React.ReactNode }) {
             className="bg-orange-100 p-4 text-2xl hover:bg-orange-200 hover:scale-110 ease-in-out duration-100 rounded-xl"
             style={{ color: "#0E599D" }}
           >
-            TORNA SU SMARTGAME
+            Go back to SMARTGAME
           </button>
         </header>
         <main className="w-1/2 h-full text-3xl text-center flex flex-col justify-center items-center">
