@@ -142,7 +142,7 @@ export function CreateRuleMenu(props: {
   return (
     <div className="w-11/12 mx-auto mt-10 flex flex-col">
       <label className="text-2xl">
-        Nome della regola:
+         Rule name:
         <input
           className="border border-black px-2 mx-2"
           value={name}
@@ -152,8 +152,8 @@ export function CreateRuleMenu(props: {
 
       <div className="flex gap-10">
         <RulePartBox
-          title="Evento"
-          text="APPENA"
+          title="Event"
+          text="AS SOON AS"
           blocks={blocks}
           array={whenArray}
           setArray={setWhenArray}
@@ -163,8 +163,8 @@ export function CreateRuleMenu(props: {
           cachedMetadata={cachedMetadata}
         />
         <RulePartBox
-          title="Stato"
-          text="MENTRE"
+          title="State"
+          text="WHILE"
           blocks={blocks}
           array={whileArray}
           setArray={setWhileArray}
@@ -173,8 +173,8 @@ export function CreateRuleMenu(props: {
           cachedMetadata={cachedMetadata}
         />
         <RulePartBox
-          title="Azione"
-          text="ALLORA"
+          title="Action"
+          text="THEN"
           blocks={blocks}
           array={doArray}
           setArray={setDoArray}
@@ -190,7 +190,7 @@ export function CreateRuleMenu(props: {
           className="text-white p-5 rounded-xl text-xl my-5 uppercase duration-100 ease-in-out hover:scale-105"
           style={{ backgroundColor: "#D73E3E" }}
         >
-          Annulla
+          Cancel
         </button>
 
         <button

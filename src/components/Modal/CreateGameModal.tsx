@@ -80,14 +80,13 @@ export function CreateGameModal(props: {
         method="dialog"
         className="flex flex-col h-full"
       >
-        <h3 className="text-3xl font-bold my-4">Nuovo gioco</h3>
+        <h3 className="text-3xl font-bold my-4">New game</h3>
         <InputField 
-          id="name" label="Nome del gioco" required />
+          id="name" label="Game name" required />
         <InputField
           id="classrooms"
-          label="Classi"
-          extra_text="Seleziona a quali classi si applica il gioco. Potrai modificare questa
-          informazione anche nella pagina “I miei giochi”."
+          label="Classes"
+				  extra_text=" Select which classes the game applies to. You can modify this information on the “My games” page."
         />
         {/* <InputField
           id="students"
@@ -97,8 +96,8 @@ export function CreateGameModal(props: {
           seleziona a quali studenti si applica. Potrai modificare questa
           informazione anche nella pagina “I miei giochi”."
         /> */}
-        <h3 className="text-3xl font-bold my-4">Definisci livelli di gioco</h3>
-        <div>Seleziona la modalità in cui creare i livelli di gioco. Potrai modificare questa informazione anche nella pagina “I miei giochi”.</div>
+        <h3 className="text-3xl font-bold my-4"> Define game levels</h3>
+        <div>Select the game modality to create the game levels. You can modify this information on the “My games” page.</div>
 
         <GameLevelDefinition
           game={game}
@@ -115,7 +114,7 @@ export function CreateGameModal(props: {
             className="text-white rounded text-xl uppercase w-32 p-2"
             style={{ backgroundColor: "#D73E3E" }}
           >
-            Annulla
+            Cancel
           </button>
           <button
             type="submit"

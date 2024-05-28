@@ -164,9 +164,9 @@ export function Badges({ badges }: { badges: Badge[] }) {
 
   return (
     <section>
-      <SectionTitle>Riconoscimenti</SectionTitle>
+      <SectionTitle> Acknowledgments</SectionTitle>
       <SectionDescription>
-        Definisci i RICONOSCIMENTI presenti nella categoria {`"badge"`}.
+			  Define the ACKNOWLEDGMENTS in the {`"badge"`} category.
       </SectionDescription>
 
       <TableTitle>Badge</TableTitle>
@@ -179,9 +179,9 @@ export function Badges({ badges }: { badges: Badge[] }) {
         </colgroup>
         <thead>
           <tr>
-            <ThCell>Nome</ThCell>
-            <ThCell>Descrizione</ThCell>
-            <ThCell>Classi</ThCell>
+            <ThCell>Name</ThCell>
+            <ThCell>Description</ThCell>
+            <ThCell>Classes</ThCell>
             <th></th>
           </tr>
         </thead>

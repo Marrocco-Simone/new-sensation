@@ -161,11 +161,11 @@ export function Levels({
 
   return (
     <section>
-      <SectionTitle>Livelli</SectionTitle>
+      <SectionTitle>Levels</SectionTitle>
       <SectionDescription>
-        Definisci i LIVELLI esperienza.
+        Define the experience levels.
       </SectionDescription>
-      <TableTitle>Livelli esperienza</TableTitle>
+      <TableTitle>Experience levels</TableTitle>
       <Table>
         <colgroup>
           <col span={1} className="w-3/12" />
@@ -174,8 +174,8 @@ export function Levels({
         </colgroup>
         <thead>
           <tr>
-            <ThCell>N° livello</ThCell>
-            <ThCell>Nome</ThCell>
+            <ThCell>Level nr.</ThCell>
+            <ThCell>Name</ThCell>
             <th></th>
           </tr>
         </thead>

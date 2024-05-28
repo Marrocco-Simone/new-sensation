@@ -21,7 +21,7 @@ export function AddRuleToTaskModal(props: {
     >
       <div className="h-full flex flex-col gap-10">
         <h2 className="text-5xl font-bold">
-          Aggiungi regola al gioco <em>{task.name}</em>
+          add rule al gioco <em>{task.name}</em>
         </h2>
         <div className="overflow-scroll flex flex-col gap-2">
           {rules.map((r) => (

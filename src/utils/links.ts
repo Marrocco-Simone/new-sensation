@@ -1,8 +1,8 @@
 export const links = {
-  create: "Crea regole",
-  rules: "Le mie regole",
-  elements: "I miei elementi di gioco",
-  games: "I miei giochi",
+  create: " Create rules",
+  rules: "My rules",
+  elements: "My game elements",
+  games: "My games",
   tutorial: "Come funziona",
   vocabularies: "Gestisci vocabolari"
 } as const;

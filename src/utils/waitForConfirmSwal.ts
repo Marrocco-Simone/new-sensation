@@ -24,7 +24,7 @@ export default function waitForConfirmSwal(
     icon: icon ?? 'question',
     showDenyButton: true,
     confirmButtonText,
-    denyButtonText: `Annulla`,
+    denyButtonText: `Cancel`,
     didOpen: () => {
       Swal.showLoading();
       setTimeout(() => {

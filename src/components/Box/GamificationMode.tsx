@@ -58,8 +58,8 @@ export function ExerciseLevel(props: {
         </colgroup>
         <thead>
           <tr>
-            <ThCell>N° livello</ThCell>
-            <ThCell>Nome</ThCell>
+            <ThCell>Level nr.</ThCell>
+            <ThCell>Name</ThCell>
           </tr>
         </thead>
         <tbody>
@@ -131,29 +131,29 @@ function DetailForm(props: {
   return (
     <form className="flex flex-col gap-5 my-4" onSubmit={onSubmit}>
       <label className="flex gap-5 w-7/12 items-center">
-        <p>Consegna</p>
+        <p>Assignment</p>
         <input
           id="assignment"
           name="assignment"
-          placeholder="Scrivi la consegna..."
+          placeholder="Write the assignment..."
           className="w-full bg-slate-300 placeholder:text-slate-700 p-1 pl-3"
           defaultValue={initial_detail?.assignment}
         />
       </label>
 
       <label className="flex gap-5 w-7/12 items-center">
-        <p className="whitespace-nowrap">Situazione di partenza</p>
+        <p className="whitespace-nowrap">Starting situation</p>
         <input
           id="start"
           name="start"
-          placeholder="Cosa compare sullo schermo? es: 1, 2, 3, 4, 5"
+          placeholder="What appears on the screen? e.g. 1, 2, 3, 4, 5"
           className="w-full bg-slate-300 placeholder:text-slate-700 p-1 pl-3"
           defaultValue={initial_detail?.start}
         />
       </label>
 
       <label className="flex gap-5 w-7/12 items-center">
-        <p>Soluzione</p>
+        <p>Solution</p>
         <input
           id="solution"
           name="solution"
@@ -168,7 +168,7 @@ function DetailForm(props: {
         style={{ backgroundColor: "#FF9900" }}
         type="submit"
       >
-        Salva esercizio
+        Save exercise
       </button>
     </form>
   );
@@ -205,10 +205,10 @@ function DetailCard(props: {
       </div>
 
       <div className="flex flex-col px-5 py-2">
-        <p>Consegna: {d.assignment}</p>
+        <p>Assignment: {d.assignment}</p>
         <div className="flex gap-5">
-          <p>Situazione di partenza: {d.start}</p>
-          <p>Soluzione: {d.solution}</p>
+          <p>Starting situation: {d.start}</p>
+          <p>Solution: {d.solution}</p>
         </div>
       </div>
 
@@ -245,7 +245,7 @@ export function ExerciseDetails(props: {
 
   return (
     <div className="w-10/12 mx-auto my-4">
-      <h4 className="text-xl font-bold my-5">Esercizi contenuti nel livello</h4>
+      <h4 className="text-xl font-bold my-5"> Exercises contained in the level</h4>
 
       {details.map((d, i) => (
         <DetailCard key={`detail-${i}`} d={d} i={i} setDetails={setDetails} />
@@ -308,7 +308,7 @@ function LevelDefinitionModal(props: {
       className="w-4/5 h-4/5 bg-white border border-black rounded-2xl py-10"
     >
       <div className="w-10/12 mx-auto">
-        <h2 className="text-3xl font-bold">Definisci livelli esercizio</h2>
+        <h2 className="text-3xl font-bold"> Define experience levels</h2>
       </div>
 
       <ExerciseLevel
@@ -325,7 +325,7 @@ function LevelDefinitionModal(props: {
           onClick={() => closeModal()}
           className="text-white rounded text-xl uppercase w-32 p-2 bg-[#D73E3E]"
         >
-          Annulla
+          Cancel
         </button>
         <button
           type="submit"
@@ -388,21 +388,21 @@ export default function GamificationMode() {
 
   return (
     <div className="p-10 flex flex-col gap-5">
-      <h3 className="text-2xl font-bold">Seleziona modalità</h3>
+      <h3 className="text-2xl font-bold">Select game modality</h3>
       <ModeChoice
-        text="Individuale"
+        text="Individual"
         choice="individual"
         mode={mode}
         changeMode={changeMode}
       />
       <ModeChoice
-        text="Cooperativa (staccati)"
+        text="Cooperative (separated)"
         choice="coop-disconnected"
         mode={mode}
         changeMode={changeMode}
       />
       <ModeChoice
-        text="Cooperativa (attaccati)"
+        text="Cooperative (joint)"
         choice="coop-connected"
         mode={mode}
         changeMode={changeMode}

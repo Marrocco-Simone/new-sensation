@@ -28,7 +28,7 @@ function CreateLoaded(props: {
   return (
     <main>
       <h1 className="w-11/12 mx-auto text-3xl font-semibold pt-12 pb-5">
-        Crea una nuova regola
+         Create a new rule 
       </h1>
       <VocabularyFilter
         vocabularies={vocabularies}
@@ -44,7 +44,7 @@ function CreateLoaded(props: {
       )) || (
         <CreateRuleMenu
           blocks={filtered_blocks}
-          confirm_button_text="Crea regola"
+          confirm_button_text="Create rule"
           vocabularies_metadata={vocabularies_metadata}
           doSomethingWithRule={(rule) => {
             createRuleApi(rule, blocks, vocabularies_metadata, accessToken);
