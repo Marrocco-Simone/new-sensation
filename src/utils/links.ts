@@ -3,7 +3,7 @@ export const links = {
   rules: "My rules",
   elements: "My game elements",
   games: "My games",
-  tutorial: "How works",
+//   tutorial: "How  it works",
   vocabularies: "Manage vocabularies"
 } as const;
 
@@ -12,6 +12,6 @@ export const linksPermissions = {
   rules: "read:rules",
   elements: "read:rules",
   games: "delete:tasks",
-  tutorial: "read:rules",
+  //tutorial: "read:rules",
   vocabularies: "update:vocabularies"
 } as const
