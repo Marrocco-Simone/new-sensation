@@ -123,7 +123,7 @@ function ModifyExperienceLevelRow({
         <input
           type="text"
           defaultValue={level?.name}
-          placeholder="Come si chiama il livello? (es. Boyscout, Primi passi, Principianti, ...)"
+          placeholder="What is the name of level?(e.g. Boyscout, First steps, Beginner, ...)"
           id="name"
           form={form_id}
           className="w-full"

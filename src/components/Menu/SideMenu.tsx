@@ -12,7 +12,7 @@ const links_svgs = {
   rules: <Docs />,
   elements: <Controller />,
   games: <Joystick />,
-  tutorial: <Question />,
+//   tutorial: <Question />,
   vocabularies: <Docs />
 } as const;
 

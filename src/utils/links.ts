@@ -3,7 +3,7 @@ export const links = {
   rules: "My rules",
   elements: "My game elements",
   games: "My games",
-  tutorial: "Come funziona",
+  tutorial: "How works",
   vocabularies: "Manage vocabularies"
 } as const;
 

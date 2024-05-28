@@ -98,7 +98,7 @@ function ModifyPointRow({
         <input
           type="text"
           defaultValue={point?.name}
-          placeholder="Per cosa viene assegnato? (es Esercizi livello 1...)"
+          placeholder="What are the awarded to? (e.g. Excercise level 1...)"
           id="name"
           form={form_id}
           className="w-full"
@@ -110,7 +110,7 @@ function ModifyPointRow({
         <input
           type="number"
           defaultValue={point?.quantity}
-          placeholder="Quanti punti vengono assegnati?"
+          placeholder="How many points are awarded"
           id="quantity"
           form={form_id}
           className="w-full"
