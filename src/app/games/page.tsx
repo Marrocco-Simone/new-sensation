@@ -81,14 +81,14 @@ function GamesLoaded(props: {
         title="Nessun gioco creato"
         text="Creando giochi potrai far giocare i tuoi studenti con SmartGame"
         url="./create"
-        button_text="Aggiungi gioco"
+        button_text="Add game"
       />
     );
 
   return (
     <main>
       <h1 className="w-8/12 mx-auto text-3xl font-semibold pt-10 pb-4">
-        Giochi
+        Games
       </h1>
       {/* <VocabularyFilter
         vocabularies={vocabularies}
@@ -97,7 +97,7 @@ function GamesLoaded(props: {
 
       <div className="w-8/12 mx-auto my-5 flex justify-between">
         <input
-          placeholder="Cerca..."
+          placeholder="Search..."
           className="w-1/4 rounded bg-gray-200 p-2"
           value={task_keyword_searched}
           onChange={(e) => setTaskKeywordSearched(e.target.value)}
@@ -121,7 +121,7 @@ function GamesLoaded(props: {
             title="Nessun gioco trovato"
             text="Nessun gioco trovato con i filtri selezionati"
             url="./create"
-            button_text="Aggiungi gioco"
+            button_text="Add game"
           />
         )) ||
           filtered_tasks.map((t) => (

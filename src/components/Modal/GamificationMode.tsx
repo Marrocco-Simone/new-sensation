@@ -56,8 +56,8 @@ export function ExerciseCard(props: {
           <div className="">{numExercise+1}</div>
         </div>
         <div className="flex flex-col min-h-full text-lg p-2 justify-center">
-          <div>Consegna: {game.levels[numLevel].exercises[numExercise].assignment}</div>
-          <div>Situazione di partenza: {game.levels[numLevel].exercises[numExercise].startSeq.join(" ")} Soluzione: {game.levels[numLevel].exercises[numExercise].endSeq?.join(" ")}</div>
+          <div>Assignment: {game.levels[numLevel].exercises[numExercise].assignment}</div>
+          <div>Starting situation: {game.levels[numLevel].exercises[numExercise].startSeq.join(" ")} Solution: {game.levels[numLevel].exercises[numExercise].endSeq?.join(" ")}</div>
         </div>
         <div className="w-[15%] flex">
             <div
@@ -130,7 +130,7 @@ export function GameLevelDefinition(props: {
           onClick={addNewLevel}
           className="uppercase bg-sky-400 text-xl text-white px-5 py-5 ease-in-out duration-75 hover:bg-sky-500 rounded-xl"
         >
-          Crea un livello
+          Create a level
         </button>
       </>
       
@@ -189,9 +189,9 @@ export function GameLevelDefinition(props: {
         <NoElementMenu
           Svg={Puzzle}
           svg_dimension="small"
-          title="Nessun livello creato"
-          text="Creando un livello potrai far giocare i tuoi studenti con SmartGame"
-          button_text="Aggiungi livello"
+          title="No levels created"
+          text=" By creating a level, you can let your students play with SmartGame"
+          button_text="Add level"
           ButtonComponent={ButtonComponent}
         />) : (
           <>
@@ -202,13 +202,14 @@ export function GameLevelDefinition(props: {
                 key={levelIndex}
                 numLevel={lv.n}
               >
-                <div className="font-semibold m-2">Esercizi contenuti nel livello</div>
+                <div className="font-semibold m-2"> Exercises contained in the level</div>
                 {lv.exercises.length === 0 ? 
                   (<NoElementMenu
                     Svg={Puzzle}
                     svg_dimension="small"
-                    title="Nessun esercizio creato"
-                    text="Crea un esercizio cliccando sul tasto Aggiungi esercizio in basso a sinistra"
+                    title="No excercise created"
+                    text=" Create an exercise by clicking the 'add exercise' button in the bottom left 
+"
                   />) : 
                   lv.exercises.map((exec, index) =>
                     <ExerciseCard 
@@ -230,7 +231,7 @@ export function GameLevelDefinition(props: {
                       }}
                       className="mb-4 uppercase bg-[#FF9900] text-xl text-white py-2 px-4 ease-in-out duration-75 hover:bg-amber-700 rounded-lg"
                     >
-                      Aggiungi esercizio
+                      Add excercise
                     </button>
                   </div>
                   <div>
@@ -241,7 +242,7 @@ export function GameLevelDefinition(props: {
                       }}
                       className="mb-4 uppercase bg-[#D73E3E] text-xl text-white py-2 px-4 ease-in-out duration-75 hover:bg-red-900 rounded-lg"
                     >
-                      Rimuovi livello
+                      Remove level
                     </button>
                   </div>
                 </div>
@@ -255,7 +256,7 @@ export function GameLevelDefinition(props: {
                 }}
                 className="mt-4 uppercase bg-[#146AB9] text-xl text-white py-2 px-4 ease-in-out duration-75 hover:bg-sky-500 rounded-lg"
               >
-                Aggiungi livello
+                Add level
               </button>
             </div>
           </>
@@ -278,31 +279,31 @@ function DetailForm(props: {
   return (
     <div className="flex flex-col gap-5 my-4 p-2 w-full">
       <label className="flex gap-5 items-center">
-        <p>Consegna</p>
+        <p>Assignment</p>
         <input
           id="assignment"
           name="assignment"
           value={assigment}
-          placeholder="Scrivi la consegna..."
+          placeholder="Write the assignment..."
           className="w-full bg-slate-300 placeholder:text-slate-700 p-1 pl-3"
           onChange={(event) => setAssignment(event.currentTarget.value)}
         />
       </label>
 
       <label className="flex gap-5 items-center">
-        <p className="whitespace-nowrap">Situazione di partenza</p>
+        <p className="whitespace-nowrap">Starting situation</p>
         <input
           id="start"
           name="start"
           value={start}
-          placeholder="Cosa compare sullo schermo? es: 1, 2, 3, 4, 5"
+          placeholder="What appears on the screen? e.g. 1, 2, 3, 4, 5"
           className="w-full bg-slate-300 placeholder:text-slate-700 p-1 pl-3"
           onChange={(event) => setStart(event.currentTarget.value)}
         />
       </label>
 
       <label className="flex gap-5 items-center">
-        <p>Soluzione</p>
+        <p>Solution</p>
         <input
           id="solution"
           name="solution"
@@ -337,7 +338,7 @@ function DetailForm(props: {
           style={{ backgroundColor: "#D73E3E" }}
           onClick={onCancel}
         >
-          Annulla
+          Cancel
         </button>
         <button
           className="py-1 px-2 text-md  uppercase text-white hover:scale-105 ease-in-out duration-100 rounded-lg"
@@ -347,7 +348,7 @@ function DetailForm(props: {
             onSave({assignment: assigment ?? "", startSeq: start?.split(" ") ?? [], endSeq: solution?.split(" "), cardType: cardType})
           }}
         >
-          Salva esercizio
+          Save exercise
         </button>
       </div>
       

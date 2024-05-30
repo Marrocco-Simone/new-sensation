@@ -12,7 +12,7 @@ const links_svgs = {
   rules: <Docs />,
   elements: <Controller />,
   games: <Joystick />,
-  tutorial: <Question />,
+//   tutorial: <Question />,
   vocabularies: <Docs />
 } as const;
 
@@ -65,7 +65,7 @@ export function SideMenu({
           <div className="w-12">
             <Logout color="white" />
           </div>
-          <p className="uppercase">Esci</p>
+          <p className="uppercase">Logout</p>
         </div>
       </nav>
     </aside>

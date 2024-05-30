@@ -98,7 +98,7 @@ function ModifyPointRow({
         <input
           type="text"
           defaultValue={point?.name}
-          placeholder="Per cosa viene assegnato? (es Esercizi livello 1...)"
+          placeholder="What are the awarded to? (e.g. Excercise level 1...)"
           id="name"
           form={form_id}
           className="w-full"
@@ -110,7 +110,7 @@ function ModifyPointRow({
         <input
           type="number"
           defaultValue={point?.quantity}
-          placeholder="Quanti punti vengono assegnati?"
+          placeholder="How many points are awarded"
           id="quantity"
           form={form_id}
           className="w-full"
@@ -144,13 +144,12 @@ export function Points({ points }: { points: Point[] }) {
 
   return (
     <section>
-      <SectionTitle>Punti</SectionTitle>
+      <SectionTitle>Points</SectionTitle>
       <SectionDescription>
-        Definisci i PUNTI da assegnare allo studente nella categoria{" "}
-        {`"punti esperienza"`}.
+         Define the POINTS to be awarded to the student in the {`"experience points"`} category.
       </SectionDescription>
 
-      <TableTitle>Punti esperienza (ghiande)</TableTitle>
+      <TableTitle>Experience points (acorns)</TableTitle>
       <Table>
         <colgroup>
           <col span={1} className="w-4/12" />
@@ -159,8 +158,8 @@ export function Points({ points }: { points: Point[] }) {
         </colgroup>
         <thead>
           <tr>
-            <ThCell>Nome</ThCell>
-            <ThCell>Quantità</ThCell>
+            <ThCell>Name</ThCell>
+            <ThCell>Quantity</ThCell>
             <th></th>
           </tr>
         </thead>

@@ -31,15 +31,15 @@ function convertBlockToString(b: Block | undefined): string {
 }
 
 export function convertRuleToString(rule: Rule): string {
-  let s = "APPENA ";
+  let s = "AS SOON AS ";
   s += convertBlockToString(rule.when);
 
   if (rule.while) {
-    s += " MENTRE ";
+    s += " WHILE ";
     s += convertBlockToString(rule.while);
   }
 
-  s += " ALLORA ";
+  s += " THEN ";
   s += rule.do.map((b) => convertBlockToString(b)).join(" E ");
 
   return s;

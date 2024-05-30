@@ -75,10 +75,10 @@ function RulesLoaded(props: {
       <NoElementMenu
         Svg={DocumentPlus}
         svg_dimension="big"
-        title="Nessuna regola creata"
-        text="Crea nuove regole per far giocare i tuoi studenti con SMARTER e SmartGame"
+        title="No rules found"
+        text="Create new rules for your students to play with SMARTER and SmartGame"
         url="./create"
-        button_text="Crea regola"
+        button_text="Create rule"
       />
     );
 
@@ -93,7 +93,7 @@ function RulesLoaded(props: {
       />
       <div className="w-11/12 mx-auto my-5 flex justify-between">
         <input
-          placeholder="Cerca..."
+          placeholder="Search..."
           className="w-1/4 rounded bg-gray-200 p-2"
           value={rule_keyword_searched}
           onChange={(e) => setRuleKeywordSearched(e.target.value)}
@@ -108,7 +108,7 @@ function RulesLoaded(props: {
             if (modal.current) modal.current?.showModal();
           }}
         >
-          Raggruppa
+          Group
         </button>
       </div>
       <div className="w-11/12 mx-auto">
@@ -116,10 +116,10 @@ function RulesLoaded(props: {
           <NoElementMenu
             Svg={DocumentPlus}
             svg_dimension="small"
-            title="Nessuna regola trovata"
-            text="Nessuna regola trovata con i filtri selezionati"
+            title="Any rule found"
+            text="No rule found with selected filter"
             url="./create"
-            button_text="Crea regola"
+            button_text="Create rule"
           />
         )) ||
           filtered_rules.map((r) => (

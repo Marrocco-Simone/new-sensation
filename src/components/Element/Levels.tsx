@@ -123,7 +123,7 @@ function ModifyExperienceLevelRow({
         <input
           type="text"
           defaultValue={level?.name}
-          placeholder="Come si chiama il livello? (es. Boyscout, Primi passi, Principianti, ...)"
+          placeholder="What is the name of level?(e.g. Boyscout, First steps, Beginner, ...)"
           id="name"
           form={form_id}
           className="w-full"
@@ -161,11 +161,11 @@ export function Levels({
 
   return (
     <section>
-      <SectionTitle>Livelli</SectionTitle>
+      <SectionTitle>Levels</SectionTitle>
       <SectionDescription>
-        Definisci i LIVELLI esperienza.
+        Define the experience levels.
       </SectionDescription>
-      <TableTitle>Livelli esperienza</TableTitle>
+      <TableTitle>Experience levels</TableTitle>
       <Table>
         <colgroup>
           <col span={1} className="w-3/12" />
@@ -174,8 +174,8 @@ export function Levels({
         </colgroup>
         <thead>
           <tr>
-            <ThCell>N° livello</ThCell>
-            <ThCell>Nome</ThCell>
+            <ThCell>Level nr.</ThCell>
+            <ThCell>Name</ThCell>
             <th></th>
           </tr>
         </thead>

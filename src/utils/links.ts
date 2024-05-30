@@ -1,10 +1,10 @@
 export const links = {
-  create: "Crea regole",
-  rules: "Le mie regole",
-  elements: "I miei elementi di gioco",
-  games: "I miei giochi",
-  tutorial: "Come funziona",
-  vocabularies: "Gestisci vocabolari"
+  create: " Create rules",
+  rules: "My rules",
+  elements: "My game elements",
+  games: "My games",
+//   tutorial: "How  it works",
+  vocabularies: "Manage vocabularies"
 } as const;
 
 export const linksPermissions = {
@@ -12,6 +12,6 @@ export const linksPermissions = {
   rules: "read:rules",
   elements: "read:rules",
   games: "delete:tasks",
-  tutorial: "read:rules",
+  //tutorial: "read:rules",
   vocabularies: "update:vocabularies"
 } as const

@@ -51,7 +51,7 @@ function VocabularyCard(props: VocabolaryCardProps) {
   return (
     //<div className="max-w-md shadow-md rounded-md overflow-hidden border-2 border-black">
     <div className="grid grid-cols-5 gap-4 lg:max-w-[70%] md:max-w-[75%] border-2 border-black p-2 rounded-md items-center">
-      <div className="col-span-2 font-semibold lg:text-2xl md:text-lg text-sm">Nome</div>
+      <div className="col-span-2 font-semibold lg:text-2xl md:text-lg text-sm">Name</div>
       <div className="col-span-2 font-semibold lg:text-2xl md:text-lg text-sm">Versione</div>
       <div className="col-span-1 font-semibold lg:text-2xl md:text-lg text-sm">Operazioni</div>
       <div className="col-span-2 md:text-2xl sm:text-xl font-semibold">{name}</div>
