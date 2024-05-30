@@ -276,6 +276,21 @@ export function createGameApi(
   });
 }
 
+export function updateGameApi(
+  game: Game,
+  access_token?: string,
+  reloadData?: () => void,
+  errorCallback?: (err: ApiError) => void
+) {
+  wrapApiCallInWaitingSwal(
+    () => apiPut<null>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/games/" + game._id, game, access_token),
+    (res) => {
+      if (reloadData) reloadData();
+    },
+    (err) => errorCallback?.(err)
+  );
+}
+
 export function createPointApi(
   point: PointJson,
   access_token?: string,

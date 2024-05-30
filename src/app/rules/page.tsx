@@ -197,7 +197,7 @@ function RulesLoaded(props: {
             </div>
           ))}
       </div>
-      <CreateGameModal modal={modal} rules_ids={selected_rules_ids} />
+      <CreateGameModal modal={modal} rules_ids={selected_rules_ids} reloadData={() => {}}/>
     </main>
   );
 }

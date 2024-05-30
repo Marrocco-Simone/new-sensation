@@ -1,5 +1,5 @@
 import { useCustomUserContext } from "@/app/context/userStore";
-import { createGameApi, createTaskApi } from "@/utils/callKnownApi";
+import { createGameApi, createTaskApi, updateGameApi } from "@/utils/callKnownApi";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { GameLevelDefinition } from "./GamificationMode";
@@ -10,9 +10,10 @@ function InputField(props: {
   label: string;
   extra_text?: string;
   required?: boolean;
-  disabled?: boolean
+  disabled?: boolean;
+  defaultValue?: string;
 }) {
-  const { id, label, extra_text, required, disabled = false } = props;
+  const { id, label, extra_text, required, disabled = false, defaultValue = "" } = props;
 
   return (
     <>
@@ -22,6 +23,7 @@ function InputField(props: {
       {extra_text && <p>{extra_text}</p>}
       <input
         id={id}
+        defaultValue={defaultValue}
         className="w-1/2 h-10 rounded-lg p-3"
         style={{ backgroundColor: "#E4E1E1" }}
         required={required}
@@ -42,11 +44,14 @@ const modes: GamificationModes[] = [
 export function CreateGameModal(props: {
   rules_ids: string[];
   modal: React.RefObject<HTMLDialogElement>;
+  update?: boolean;
+  gameData?: Game;
+  reloadData: () => void;
 }) {
-  const { rules_ids, modal } = props;
+  const { rules_ids, modal, update = false, gameData, reloadData } = props;
   const {accessToken} = useCustomUserContext();
   const router = useRouter();
-  const [game, setGame] = useState<Omit<Game, "_id">>({
+  const [game, setGame] = useState<Omit<Game, "_id">>(gameData ?? {
     name: "",
     enabled: true,
     levels: []
@@ -61,13 +66,21 @@ export function CreateGameModal(props: {
     // @ts-ignore
     //const students = e.target.students.value as string;
     // TODO check if the fields name are correct
-    let gameCreate = { ...game };
+    let gameCreate: Game = { ...game };
     gameCreate.name = name;
 
-    createGameApi(rules_ids, gameCreate, accessToken, () => {
-      modal.current?.close();
-      router.push("/games")
-    }, () => modal.current?.close());
+    if (update) {
+      updateGameApi(gameCreate, accessToken, () => {
+        reloadData();
+        modal.current?.close();
+      }, () => modal.current?.close());
+    } else {
+      createGameApi(rules_ids, gameCreate, accessToken, () => {
+        modal.current?.close();
+        router.push("/games")
+      }, () => modal.current?.close());
+    }
+    
   }
 
   return (
@@ -80,9 +93,9 @@ export function CreateGameModal(props: {
         method="dialog"
         className="flex flex-col h-full"
       >
-        <h3 className="text-3xl font-bold my-4">New game</h3>
+        <h3 className="text-3xl font-bold my-4">{update ? "Update game" : "New game"}</h3>
         <InputField 
-          id="name" label="Game name" required />
+          id="name" label="Game name" required defaultValue={game.name}/>
         <InputField
           id="classrooms"
           label="Classes"
@@ -99,11 +112,13 @@ export function CreateGameModal(props: {
         <h3 className="text-3xl font-bold my-4"> Define game levels</h3>
         <div>Select the game modality to create the game levels. You can modify this information on the “My games” page.</div>
 
-        <GameLevelDefinition
-          game={game}
-          setGame={setGame}
-          modes={modes}
-        />
+        {gameData && 
+          <GameLevelDefinition
+            game={game}
+            setGame={setGame}
+            modes={modes}
+          />}
+        
 
         <div className="w-11/12 ml-auto flex justify-end gap-10 mt-4">
           <button
@@ -121,7 +136,7 @@ export function CreateGameModal(props: {
             className="text-white rounded text-2xl uppercase w-32 p-2"
             style={{ backgroundColor: "#146AB9" }}
           >
-            Crea
+            {update ? "Update" : "Create"}
           </button>
         </div>
       </form>

@@ -8,17 +8,18 @@ import waitForConfirmSwal from "@/utils/waitForConfirmSwal";
 import { AddRuleToTaskModal } from "../Modal";
 import { GameBoxTopRow, RuleBox } from ".";
 import { useCustomUserContext } from "@/app/context/userStore";
-import GamificationMode from "./GamificationMode";
+import { Game } from "../Element/types";
 
 export function GameBox(props: {
   task: TaskJson;
   rules: Rule[];
   vocabularies_metadata: VocabularyMetadata[];
+  game?: Game
   reloadData: () => void;
 }) {
-  const { task, rules, vocabularies_metadata, reloadData } = props;
+  const { task, rules, vocabularies_metadata, game, reloadData } = props;
   const task_instances_url = `tasks/${task.id}/instances`;
-  const [smarterId, setSmarterId] = useState("");
+  const [smarterId, setSmarterId] = useState("1");
   const modal = useRef<HTMLDialogElement>(null);
   const { accessToken } = useCustomUserContext();
 
@@ -45,26 +46,18 @@ export function GameBox(props: {
           user: "smarter",
           password: "melaC-melaV",
           smarter: "smarter_fbk_" + smarterId,
-        },
-        SmartGameStateReader: {
-          protocol: "http",
-          domain: "127.0.0.1:5001",
-          accessToken: accessToken,
-          entityId: "6633815873dda3de0aa92f9a",
-          gameId: "6639b495d866cb8c6dd7e63c",
-          mode: 3
-        },
+        }
       };
     }
 
     return conf;
-  }, [smarterId, vocabularies_metadata, accessToken]);
+  }, [smarterId, vocabularies_metadata]);
 
   function createNewInstance() {
     wrapApiCallInWaitingSwal(
       () => apiPost(task_instances_url, taskConfig, accessToken),
       () => {
-        Swal.fire("Gioco attivato", "", "success");
+        Swal.fire("Game started", "", "success");
         resetInstances();
       }
     );
@@ -78,14 +71,14 @@ export function GameBox(props: {
     );
 
     Promise.all(promises).then(() => {
-      Swal.fire("Gioco eliminato", "", "success");
+      Swal.fire("Game stopped", "", "success");
       resetInstances();
     });
   }
 
   return (
     <div className="border border-solid border-black rounded-xl mb-5">
-      <GameBoxTopRow task={task} reloadData={reloadData} />
+      <GameBoxTopRow task={task} game={game} reloadData={reloadData} />
 
       <div className="flex justify-between text-2xl p-7">
         <Toggle
@@ -94,31 +87,28 @@ export function GameBox(props: {
           label_text="attivato / disattivato"
           checkedFn={() =>
             waitForConfirmSwal(
-              `Vuoi chiudere le istanze del gioco ${task.name}?`,
+              `Are you sure about closing the game ${task.name}?`,
               "Chiudi",
               () => deleteInstances()
             )
           }
           uncheckedFn={() =>
             waitForConfirmSwal(
-              `Vuoi creare una nuova istanza del gioco ${task.name}?`,
+              `Do you want to create a new instance of the game ${task.name}?`,
               "Apri",
               () => createNewInstance()
             )
           }
         />
         <div className="flex items-center gap-2">
-          <div>Inserisci ID smarter</div>
+          <div>Insert Smarter ID</div>
           <select
-            defaultValue={1}
-            className="border border-black border-2 rounded-md p-2"
+            className="border-black border-2 rounded-md p-2"
             value={smarterId}
             onChange={(e) => setSmarterId(e.currentTarget.value)}>
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
+              {Array.from({ length: 5 }, (_, index) => 
+                (<option key={index} value={""+(index+1)}>{index+1}</option>)
+              )}
           </select>
         </div>
       </div>
@@ -143,7 +133,7 @@ export function GameBox(props: {
             if (modal.current) modal.current?.showModal();
           }}
         >
-          Aggiungi Regola
+          Add rule
         </button>
       </div>
 
@@ -153,8 +143,6 @@ export function GameBox(props: {
         rules={rules}
         reloadData={reloadData}
       />
-
-      <GamificationMode />
     </div>
   );
 }

@@ -80,8 +80,6 @@ export function convertBlockJsonToBlock(
   To convert a BlockJson to a Block, I need to construct the Block from the BlockMetadata, but adding the BlockJson choices.
   Since the choices are in an array that has the same order as the label but without the text part, i need an external index.
   */
-  console.log(v.blockMetadata);
-  console.log(b.name)
   let param_index = 0;
   for (const label of v.blockMetadata[b.name].label) {
     const { type } = label;
