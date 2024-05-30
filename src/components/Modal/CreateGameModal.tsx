@@ -112,12 +112,11 @@ export function CreateGameModal(props: {
         <h3 className="text-3xl font-bold my-4"> Define game levels</h3>
         <div>Select the game modality to create the game levels. You can modify this information on the “My games” page.</div>
 
-        {gameData && 
-          <GameLevelDefinition
-            game={game}
-            setGame={setGame}
-            modes={modes}
-          />}
+        <GameLevelDefinition
+          game={game}
+          setGame={setGame}
+          modes={modes}
+        />
         
 
         <div className="w-11/12 ml-auto flex justify-end gap-10 mt-4">
