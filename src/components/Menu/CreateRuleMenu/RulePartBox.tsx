@@ -171,7 +171,7 @@ export default function RulePartBox(props: {
               <SelectOfStrings
                 key={t_index}
                 blocks={blocks}
-                std_text="<numero>"
+                std_text="<specify number>"
                 options={t.label.values.map((x) => `${x}`)}
                 onChange={(value) =>
                   addBlockChoice(b, t_index, value, valueIsChanged)
@@ -197,7 +197,7 @@ export default function RulePartBox(props: {
               <SelectOfStrings
                 key={t_index}
                 blocks={blocks}
-                std_text="<stringa>"
+                std_text="<specify>"
                 options={t.label.values}
                 onChange={(value) =>
                   addBlockChoice(b, t_index, value, valueIsChanged)
@@ -223,7 +223,7 @@ export default function RulePartBox(props: {
               <SelectOfStrings
                 key={t_index}
                 blocks={blocks}
-                std_text="<stringa>"
+                std_text="<specify>"
                 options={cachedMetadata[t.label.url] ?? []}
                 onChange={(value) =>
                   addBlockChoice(b, t_index, value, valueIsChanged)
@@ -236,7 +236,7 @@ export default function RulePartBox(props: {
               <InputString
                 key={t_index}
                 blocks={blocks}
-                std_text="<stringa>"
+					std_text="<specify>"
                 onChange={(value) =>
                   addBlockChoice(b, t_index, value, valueIsChanged)
                 }
@@ -272,7 +272,7 @@ export default function RulePartBox(props: {
               <SelectOfBlocks
                 key={t_index}
                 blocks={this_choice_blocks}
-                std_text="<tipo>"
+                std_text="<specifty type>"
                 onChange={(value) =>
                   addBlockChoice(b, t_index, value, valueIsChanged)
                 }
@@ -324,9 +324,9 @@ export default function RulePartBox(props: {
     }
 
     const placeHolders = {
-      WHEN: "Accade cosa?",
-      WHILE: "Quale circostanza sta occorrendo?",
-      ACTION: "Che cosa deve avvenire?"
+      WHEN: "What happens?",
+		WHILE: "What circumstance is occurring?",
+		ACTION: "What needs to happen?"
     }
 
     const elements: React.ReactNode[] = [];

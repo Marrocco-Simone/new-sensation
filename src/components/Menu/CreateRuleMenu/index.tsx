@@ -110,7 +110,7 @@ export function CreateRuleMenu(props: {
 
   function makeRule() {
     if (!name) {
-      Swal.fire("Dai un nome alla regola", "", "error");
+      Swal.fire("Specify rule name please", "", "error");
       return;
     }
 
@@ -135,7 +135,7 @@ export function CreateRuleMenu(props: {
     } catch (e) {
       // @ts-ignore
       const message = e.message;
-      Swal.fire("Errore nel creare la regola", message, "error");
+      Swal.fire("Some error in rule building", message, "error");
     }
   }
 

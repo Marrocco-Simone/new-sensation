@@ -17,16 +17,16 @@ export default function SelectOfBlocks(props: {
           s += t.label.value + " ";
           break;
         case "PARAM_INTEGER":
-          s += "<numero> ";
+          s += "<specify number> ";
           break;
         case "PARAM_STRING":
-          s += "<stringa> ";
+			  s += "<specify> ";
           break;
         case "PARAM_OPEN_STRING":
-          s += "<stringa> ";
+          s += "<specify> ";
           break;
         case "PARAM_CLASS":
-          s += "<tipo> ";
+          s += "<specify type> ";
           break;
       }
     return s.trim();
