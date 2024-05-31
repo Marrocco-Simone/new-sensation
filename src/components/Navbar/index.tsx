@@ -22,7 +22,7 @@ export default function Navbar({ text }: { text: string }) {
           <Hamburger />
         </button>
         {!showMenu && <h1 className="ml-10 uppercase lg:text-4xl md:text-2xl text-[75%]">{text}</h1>}
-        <h2 className="ml-auto lg:text-4xl md:text-3xl text-[0px]">SMARTER: the Rulebook</h2>
+        <h2 className="ml-auto lg:text-4xl md:text-3xl text-[0px]">SMARTER: The RuleCraft</h2>
       </header>
 
       <div className="h-24 w-full" />

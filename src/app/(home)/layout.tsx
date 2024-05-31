@@ -12,7 +12,7 @@ export default function layout({ children }: { children: React.ReactNode }) {
       </div>
       <div className="h-screen relative flex flex-col items-center overflow-scroll">
         <header className="flex justify-between px-10 py-5 bg-transparent w-full">
-          <h1 className="text-white text-4xl">SMARTER: the Rulebook</h1>
+          <h1 className="text-white text-4xl">SMARTER: The RuleCraft</h1>
           <button
             className="bg-orange-100 p-4 text-2xl hover:bg-orange-200 hover:scale-110 ease-in-out duration-100 rounded-xl"
             style={{ color: "#0E599D" }}
