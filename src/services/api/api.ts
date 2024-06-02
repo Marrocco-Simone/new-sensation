@@ -78,6 +78,7 @@ async function apiCall<T>(
   } catch (e: any) {
     const message: string = e.message;
     console.error(message);
+    console.log(e);
     const error_json: ApiError = {
       status: "error",
       message,
