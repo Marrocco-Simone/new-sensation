@@ -125,18 +125,33 @@ export function modifyTaskApi(
   );
 }
 
-export function deleteTaskApi(task: TaskJson, access_token?: string, reloadData?: () => void) {
+export function deleteTaskApi(task: TaskJson, access_token?: string, reloadData?: () => void, game?: Game) {
   if (!task?.id) return Swal.fire("Errore", "Task does not have id", "error");
 
-  waitForConfirmSwal(`Vuoi eliminare il gioco ${task.name}?`, "Elimina", () =>
+  waitForConfirmSwal(`Vuoi eliminare il gioco ${task.name}?`, "Elimina", () => {
+    console.log(game);
+    if (game) {
+      if (!game?._id) return Swal.fire("Errore", "Game does not have id", "error");
+      
+      return deleteGameApi(game._id, access_token, () => wrapApiCallInWaitingSwal(
+        () => apiDelete(`tasks/${task.id}`, access_token),
+        (res) => {
+          Swal.fire("Gioco eliminato", "", "success");
+          if (reloadData) reloadData();
+        },
+        () => Swal.fire("Error", "Unable to delete the game, retry later", "error")
+      ), () => Swal.fire("Error", "Unable to delete the game, retry later", "error"))
+    }
+
     wrapApiCallInWaitingSwal(
       () => apiDelete(`tasks/${task.id}`, access_token),
       (res) => {
         Swal.fire("Gioco eliminato", "", "success");
         if (reloadData) reloadData();
-      }
+      },
+      () => Swal.fire("Error", "Unable to delete the game, retry later", "error")
     )
-  );
+  });
 }
 
 export function createBadgeApi(
@@ -285,6 +300,22 @@ export function updateGameApi(
   wrapApiCallInWaitingSwal(
     () => apiPut<null>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/games/" + game._id, game, access_token),
     (res) => {
+      if (reloadData) reloadData();
+    },
+    (err) => errorCallback?.(err)
+  );
+}
+
+export function deleteGameApi(
+  game_id: string,
+  access_token?: string,
+  reloadData?: () => void,
+  errorCallback?: (err: ApiError) => void
+) {
+  wrapApiCallInWaitingSwal(
+    () => apiDelete<null>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/games/" + game_id, access_token),
+    (res) => {
+      console.log(res);
       if (reloadData) reloadData();
     },
     (err) => errorCallback?.(err)

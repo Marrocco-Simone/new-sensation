@@ -80,7 +80,7 @@ export function GameBoxTopRow(props: {
       </div>
       <div
         className="h-20 p-3 cursor-pointer duration-75 ease-in-out hover:scale-110"
-        onClick={() => deleteTaskApi(task, accessToken, reloadData)}
+        onClick={() => deleteTaskApi(task, accessToken, reloadData, game)}
       >
         <Bin />
       </div>
