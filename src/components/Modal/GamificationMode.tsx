@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { CardTypes, Exercise, Game, GamificationModes, GamificationModesMapping } from "../Element/types";
+import { CardTypes, Exercise, ExerciseLevel, Game, GamificationModes, GamificationModesMapping } from "../Element/types";
 import { Bin, Copy, Pen, Puzzle } from "../Icons";
 import { useCustomUserContext } from "@/app/context/userStore";
 import { UpArrow } from "../Icons/UpArrow";
@@ -157,7 +157,13 @@ export function GameLevelDefinition(props: {
   function removeLevel(levelIndex: number) {
     setGame(prev => {
       let gameModify = {...prev};
-      delete gameModify.levels[levelIndex]
+      let lvls = [...gameModify.levels];
+      const popped = lvls.splice(levelIndex, 1) as ExerciseLevel[];
+      gameModify.levels = lvls;
+      gameModify.levels.filter(lv => lv.mode === popped[0].mode && lv.n > popped[0].n).forEach((lvl) => {
+        const lvlIndex = mapper[lvl.mode+"-"+lvl.n];
+        gameModify.levels[lvlIndex-1].n = lvl.n-1;
+      })
       return {...gameModify};
     })
     setExerciseLevelModifying("")
@@ -238,7 +244,7 @@ export function GameLevelDefinition(props: {
                     <button 
                       onClick={(e) => {
                         e.preventDefault();
-                        removeLevel(levelIndex)
+                        removeLevel(mapper[lv.mode+"-"+lv.n])
                       }}
                       className="mb-4 uppercase bg-[#D73E3E] text-xl text-white py-2 px-4 ease-in-out duration-75 hover:bg-red-900 rounded-lg"
                     >

@@ -91,9 +91,9 @@ function GamesLoaded(props: {
       <NoElementMenu
         Svg={Puzzle}
         svg_dimension="big"
-        title="Nessun gioco creato"
-        text="Creando giochi potrai far giocare i tuoi studenti con SmartGame"
-        url="./create"
+        title="No games created"
+        text="By creating games you can let your students play with SmartGame"
+        url="./rules"
         button_text="Add game"
       />
     );
@@ -131,9 +131,9 @@ function GamesLoaded(props: {
           <NoElementMenu
             Svg={Puzzle}
             svg_dimension="small"
-            title="Nessun gioco trovato"
-            text="Nessun gioco trovato con i filtri selezionati"
-            url="./create"
+            title="No games found"
+            text="No games found with the selected filters"
+            url="./rules"
             button_text="Add game"
           />
         )) ||

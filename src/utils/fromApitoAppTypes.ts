@@ -81,7 +81,7 @@ export function convertBlockJsonToBlock(
   Since the choices are in an array that has the same order as the label but without the text part, i need an external index.
   */
   let param_index = 0;
-  for (const label of v.blockMetadata[b.name].label) {
+  for (const label of (v.blockMetadata[b.name]?.label ?? [])) {
     const { type } = label;
     switch (type) {
       case "TEXT":
@@ -127,8 +127,8 @@ export function convertBlockJsonToBlock(
   const block: Block = {
     name: b.name,
     vocabulary: v.name, // (b.vocabulary as VocabularyMetadata)
-    type: v.blockMetadata[b.name].type,
-    scope: v.blockMetadata[b.name].scope,
+    type: v.blockMetadata[b.name]?.type,
+    scope: v.blockMetadata[b.name]?.scope,
     value: b.value,
     text,
   };

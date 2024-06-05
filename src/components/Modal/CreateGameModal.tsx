@@ -1,7 +1,7 @@
 import { useCustomUserContext } from "@/app/context/userStore";
 import { createGameApi, createTaskApi, updateGameApi } from "@/utils/callKnownApi";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GameLevelDefinition } from "./GamificationMode";
 import { ExerciseLevel, Game } from "../Element/types";
 
@@ -56,6 +56,10 @@ export function CreateGameModal(props: {
     enabled: true,
     levels: []
   })
+
+  useEffect(() => {
+    if (gameData) setGame(gameData)
+  }, [gameData])
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
