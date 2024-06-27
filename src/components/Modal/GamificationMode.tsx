@@ -149,7 +149,7 @@ export function GameLevelDefinition(props: {
     setExerciseLevelModifying(GamificationModesMapping[mode]+"-"+levelIndex+"-"+(game.levels[levelIndex].exercises.length))
     setGame(prev => {
       let gameModify = {...prev};
-      gameModify.levels[levelIndex].exercises.push({assignment: "", startSeq: [], endSeq: [], cardType: "numbers"});
+      gameModify.levels[levelIndex].exercises.push({assignment: "", startSeq: [], endSeq: [], cardType: "numero"});
       return {...gameModify};
     })
   }
@@ -280,7 +280,7 @@ function DetailForm(props: {
   const [assigment, setAssignment] = useState(initial_detail?.assignment)
   const [start, setStart] = useState(initial_detail?.startSeq.join(" "));
   const [solution, setSolution] = useState(initial_detail?.endSeq?.join(" "));
-  const [cardType, setCardType] = useState<CardTypes>("numbers");
+  const [cardType, setCardType] = useState<CardTypes>("numero");
 
   return (
     <div className="flex flex-col gap-5 my-4 p-2 w-full">
@@ -333,8 +333,8 @@ function DetailForm(props: {
           onClick={(e) => e.stopPropagation()}
           onMouseOver={(e) => e.stopPropagation()}
         >
-          <option className="max-w-md" value="numbers">Numeri</option>
-          <option className="max-w-md" value="apples">Mele</option>
+          <option className="max-w-md" value="numero">Numeri</option>
+          <option className="max-w-md" value="mela">Mele</option>
         </select>
       </label>
 

@@ -52,7 +52,7 @@ export const GamificationModesMapping : {[x: string]: number} = {
 }
 
 export type GamificationModes = "individual" | "coop-disconnected" | "coop-connected";
-export type CardTypes = "numbers" | "apples";
+export type CardTypes = "numero" | "mela";
 
 export type Exercise = {
   assignment: string
