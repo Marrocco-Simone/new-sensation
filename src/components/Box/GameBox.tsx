@@ -39,16 +39,26 @@ export function GameBox(props: {
   // TODO: refactor this only for demo purposes
   const taskConfig = useMemo(() => {
     const conf: { [x: string]: any } = {};
-    for (const v of vocabularies_metadata) {
-      conf[v.name] = {
-        SmarterStateReader: {
-          broker: "ssl://ib05a168.ala.us-east-1.emqxsl.com:8883",
-          user: "smarter",
-          password: "melaC-melaV",
-          smarter: "smarter_fbk_" + smarterId,
-        }
-      };
-    }
+    // for (const v of vocabularies_metadata) {
+    //   conf[v.name] = {
+    //     SmarterStateReader: {
+    //       broker: "ssl://ib05a168.ala.us-east-1.emqxsl.com:8883",
+    //       user: "smarter",
+    //       password: "melaC-melaV",
+    //       smarter: "smarter_fbk_" + smarterId,
+    //     }
+    //   };
+    // }
+
+    conf["SmarterVocabulary"] = {
+      SmarterStateReader: {
+        broker: "ssl://ib05a168.ala.us-east-1.emqxsl.com:8883",
+        user: "smarter",
+        password: "melaC-melaV",
+        smarter: "smarter_fbk_" + smarterId,
+        mode: "INDIVIDUAL"
+      }
+    };
 
     return conf;
   }, [smarterId, vocabularies_metadata]);
