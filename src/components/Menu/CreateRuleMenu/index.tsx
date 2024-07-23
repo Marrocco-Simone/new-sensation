@@ -73,14 +73,14 @@ export function CreateRuleMenu(props: {
 
   useEffect(() => {
     const urls = new Set((blocks.map(b => {
-      const labels = b.text.filter(t => t.type === "PARAM_OPEN_STRING")
+      const labels = b.text.filter(t => t.type === "PARAM_OPEN_STRING" && t.label.type === "PARAM_OPEN_STRING" && !!t.label.url)
 
-      if (labels.length === 1 && labels[0].label.type === "PARAM_OPEN_STRING") {
-        return labels[0].label.url;
+      if (labels.length > 0) {
+        return labels.map(l => l.label.type === "PARAM_OPEN_STRING" && l.label.url);
       }
 
       return "";
-    }).filter(b => !!b) as string[]));
+    }).flatMap(e => e).filter(b => !!b) as string[]));
 
     urls.forEach(async url => {
       if (!cachedMetadata[url]) {
