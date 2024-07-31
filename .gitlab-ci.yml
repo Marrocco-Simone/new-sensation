@@ -18,15 +18,15 @@ include:
 variables:
   SECURE_LOG_LEVEL: info
   DOCKER_DRIVER: overlay
-  CONTAINER_FRONTEND_IMAGE: smartcommunitylab/smartergame-frontend:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
-  CONTAINER_FRONTEND_IMAGE_LATEST: smartcommunitylab/smartergame-frontend:$CI_COMMIT_REF_NAME-latest
+  CONTAINER_RULE_CRAFT: smartcommunitylab/smartergame-rulecraft:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+  CONTAINER_RULE_CRAFT_LATEST: smartcommunitylab/smartergame-rulecraft:$CI_COMMIT_REF_NAME-latest
   BACKEND_URL: "https://backend-smartgame.polyglot-edu.com/"
   AUTH0_SECRET: "$AUTH0_SECRET"
   AUTH0_CLIENT_ID: "$AUTH0_CLIENT_ID"
   AUTH0_CLIENT_SECRET: "$AUTH0_CLIENT_SECRET"
   AUTH0_BASE_URL: https://frontend.smartergame.smartcommunitylab.it
 
-frontend-container-build:
+container-build:
   stage: build
   environment:
     name: $CI_COMMIT_REF_NAME
@@ -38,10 +38,10 @@ frontend-container-build:
         --build-arg AUTH0_CLIENT_ID=$AUTH0_CLIENT_ID
         --build-arg AUTH0_CLIENT_SECRET=$AUTH0_CLIENT_SECRET
         --build-arg AUTH0_BASE_URL=$AUTH0_BASE_URL
-        -t $CONTAINER_FRONTEND_IMAGE 
-        -t $CONTAINER_FRONTEND_IMAGE_LATEST .
-    - docker push $CONTAINER_FRONTEND_IMAGE
-    - docker push $CONTAINER_FRONTEND_IMAGE_LATEST
+        -t $CONTAINER_RULE_CRAFT 
+        -t $CONTAINER_RULE_CRAFT_LATEST .
+    - docker push $CONTAINER_RULE_CRAFT
+    - docker push $CONTAINER_RULE_CRAFT_LATEST
   only:
     - dev
     - prod
@@ -57,9 +57,9 @@ deploy-dev:
   environment:
     name: dslab
   script:
-    - echo "deploy frontend"
-    - kubectl -n smartergame-dev set image deployments/smartergame-frontend smartergame-frontend=$CONTAINER_FRONTEND_IMAGE --record=true
-    - kubectl -n smartergame-dev rollout status deployment smartergame-frontend
+    - echo "deploy rulecraft"
+    - kubectl -n smartergame-dev set image deployments/smartergame-rulecraft smartergame-rulecraft=$CONTAINER_RULE_CRAFT --record=true
+    - kubectl -n smartergame-dev rollout status deployment smartergame-rulecraft
   only:
     - dev
 
@@ -71,17 +71,17 @@ deploy-prod:
   environment:
     name: dslab
   script:
-    - echo "deploy frontend"
-    - kubectl -n smartergame-prod set image deployments/smartergame-frontend smartergame-frontend=$CONTAINER_FRONTEND_IMAGE --record=true
-    - kubectl -n smartergame-prod rollout status deployment smartergame-frontend
+    - echo "deploy rulecraft"
+    - kubectl -n smartergame-prod set image deployments/smartergame-rulecraft smartergame-rulecraft=$CONTAINER_RULE_CRAFT --record=true
+    - kubectl -n smartergame-prod rollout status deployment smartergame-rulecraft
   only:
     - prod
 
 container_scanning:
   dependencies:
-    - frontend-container-build
+    - container-build
   variables:
-    CS_IMAGE: $CONTAINER_FRONTEND_IMAGE
+    CS_IMAGE: $CONTAINER_RULE_CRAFT
     CS_DOCKERFILE_PATH: Dockerfile
     GIT_STRATEGY: fetch
   artifacts:
@@ -94,10 +94,6 @@ spotbugs-sast:
      - if: '$CI_COMMIT_REF_NAME == "main"'
 
 semgrep-sast:
-  rules:
-     - if: '$CI_COMMIT_REF_NAME == "main"'
-
-nodejs-scan-sast:
   rules:
      - if: '$CI_COMMIT_REF_NAME == "main"'
 
