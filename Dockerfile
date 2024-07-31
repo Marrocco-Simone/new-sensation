@@ -20,12 +20,12 @@ ARG AUTH0_SECRET
 ARG AUTH0_CLIENT_ID
 ARG AUTH0_CLIENT_SECRET
 ARG AUTH0_BASE_URL
-ARG NEXT_PUBLIC_BACKEND_URL
-ENV NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
+ARG BACKEND_URL
+ENV NEXT_PUBLIC_BACKEND_URL=${BACKEND_URL}
 ARG AUTH0_AUDIENCE=https://smarter.com
 ARG AUTH0_SCOPE="openid profile email"
 ARG AUTH0_ISSUER_BASE_URL=https://smarter.eu.auth0.com
-ARG NEXT_PUBLIC_SMARTGAME_URL="https://smartgame-api.polyglot-edu.com"
+ARG SMARTGAME_URL="https://smartgame-api.polyglot-edu.com"
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -38,7 +38,7 @@ RUN export AUTH0_BASE_URL=${AUTH0_BASE_URL} && \
 	export AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET} && \
 	export AUTH0_AUDIENCE=${AUTH0_AUDIENCE} && \
 	export AUTH0_SCOPE=${AUTH0_SCOPE} && \
-	export NEXT_PUBLIC_SMARTGAME_URL=${NEXT_PUBLIC_SMARTGAME_URL} && \
+	export NEXT_PUBLIC_SMARTGAME_URL=${SMARTGAME_URL} && \
 	npm run build
 
 FROM gcr.io/distroless/nodejs20-debian12:nonroot
