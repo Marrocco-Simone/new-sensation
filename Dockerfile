@@ -22,7 +22,7 @@ ARG AUTH0_CLIENT_SECRET
 ARG AUTH0_BASE_URL
 ARG NEXT_PUBLIC_BACKEND_URL
 ENV NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
-ARG AUTH0_AUDIENCE=https://smarter.com
+ARG AUTH0_AUDIENCE="https://smarter.com"
 ARG AUTH0_SCOPE="openid profile email"
 ARG AUTH0_ISSUER_BASE_URL=https://smarter.eu.auth0.com
 ARG NEXT_PUBLIC_SMARTGAME_URL="https://smartgame-api.polyglot-edu.com"
@@ -46,6 +46,11 @@ COPY --from=builder /app/.next/standalone/ /app
 COPY --from=builder /app/public /app/public
 COPY --from=builder /app/.next/static /app/.next/static
 ENV HOSTNAME "0.0.0.0"
+ENV NODE_ENV="production"
+ENV AUTH0_ISSUER_BASE_URL="https://smarter.eu.auth0.com"
+ENV AUTH0_AUDIENCE="https://smartergame.com"
+ENV AUTH0_SCOPE="openid profile email offline_access"
+
 # nonroot user id
 USER 65532 
 EXPOSE 3000
