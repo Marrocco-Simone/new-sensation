@@ -351,7 +351,9 @@ function DetailForm(props: {
           style={{ backgroundColor: "#FF9900" }}
           onClick={(e) => {
             e.preventDefault();
-            onSave({assignment: assigment ?? "", startSeq: start?.split(" ") ?? [], endSeq: solution?.split(" "), cardType: cardType})
+            const startSeq = start?.split(" ") ?? [];
+            const endSeq = solution?.split(" ")
+            onSave({assignment: assigment ?? "", startSeq: startSeq, endSeq: startSeq.length === endSeq?.length ? endSeq : undefined, cardType: cardType})
           }}
         >
           Save exercise
