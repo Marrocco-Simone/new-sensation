@@ -19,7 +19,6 @@ export function GameBox(props: {
 }) {
   const { task, rules, vocabularies_metadata, game, reloadData } = props;
   const task_instances_url = `tasks/${task.id}/instances`;
-  const [smarterId, setSmarterId] = useState("1");
   const modal = useRef<HTMLDialogElement>(null);
   const { accessToken } = useCustomUserContext();
 
@@ -35,43 +34,6 @@ export function GameBox(props: {
     resetInstances();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // TODO: refactor this only for demo purposes
-  const taskConfig = useMemo(() => {
-    const conf: { [x: string]: any } = {};
-    // for (const v of vocabularies_metadata) {
-    //   conf[v.name] = {
-    //     SmarterStateReader: {
-    //       broker: "ssl://ib05a168.ala.us-east-1.emqxsl.com:8883",
-    //       user: "smarter",
-    //       password: "melaC-melaV",
-    //       smarter: "smarter_fbk_" + smarterId,
-    //     }
-    //   };
-    // }
-
-    conf["SmarterVocabulary"] = {
-      SmarterStateReader: {
-        broker: "ssl://ib05a168.ala.us-east-1.emqxsl.com:8883",
-        user: "smarter",
-        password: "melaC-melaV",
-        smarter: "smarter_fbk_" + smarterId,
-        mode: "INDIVIDUAL"
-      }
-    };
-
-    return conf;
-  }, [smarterId, vocabularies_metadata]);
-
-  function createNewInstance() {
-    wrapApiCallInWaitingSwal(
-      () => apiPost(task_instances_url, taskConfig, accessToken),
-      () => {
-        Swal.fire("Game started", "", "success");
-        resetInstances();
-      }
-    );
-  }
 
   function deleteInstances() {
     if (!instances) return;
@@ -102,25 +64,8 @@ export function GameBox(props: {
               () => deleteInstances()
             )
           }
-          uncheckedFn={() =>
-            waitForConfirmSwal(
-              `Do you want to create a new instance of the game ${task.name}?`,
-              "Apri",
-              () => createNewInstance()
-            )
-          }
+          uncheckedFn={() => {}}
         />
-        <div className="flex items-center gap-2">
-          <div>Insert Smarter ID</div>
-          <select
-            className="border-black border-2 rounded-md p-2"
-            value={smarterId}
-            onChange={(e) => setSmarterId(e.currentTarget.value)}>
-              {Array.from({ length: 5 }, (_, index) => 
-                (<option key={index} value={""+(index+1)}>{index+1}</option>)
-              )}
-          </select>
-        </div>
       </div>
 
       {task.rules.map((r) => (
