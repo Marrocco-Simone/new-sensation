@@ -209,7 +209,7 @@ export default function RulePartBox(props: {
         case "PARAM_OPEN_STRING":
           if (t.label.type !== "PARAM_OPEN_STRING") throw new Error();
 
-          if ((t.label.url !== undefined && t.value) || (array.length-1 > block_index && t.value !== undefined))
+          if (t.value)//if ((t.label.url !== undefined && t.value) || (array.length-1 > block_index && t.value !== undefined))
             elements.push(
               <WrapNodeInClickableDiv
                 key={t_index}

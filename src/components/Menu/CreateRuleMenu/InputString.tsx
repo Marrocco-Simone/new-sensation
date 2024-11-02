@@ -1,5 +1,5 @@
 import { Block } from "@/types";
-import React from "react";
+import React, { useState } from "react";
 
 export default function InputString(props: {
   blocks: Block[];
@@ -11,14 +11,15 @@ export default function InputString(props: {
 
   return (
     <input
-      onChange={(event) => {
-        const value = event.target.value;
-        onChange(value);
-      }}
       className="text-black p-2 max-w-md bg-white border border-black"
       //style={{ backgroundColor: "#73B9F9" }}
       onClick={(e) => e.stopPropagation()}
       onMouseOver={(e) => e.stopPropagation()}
+      onBlur={(e) => {
+        e.stopPropagation()
+        const value = e.target.value;
+        onChange(value);
+      }}
       placeholder={std_text}
     />
   );
