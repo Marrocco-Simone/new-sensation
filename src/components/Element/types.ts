@@ -53,12 +53,15 @@ export const GamificationModesMapping : {[x: string]: number} = {
 
 export type GamificationModes = "individual" | "coop-disconnected" | "coop-connected";
 export type CardTypes = "numero" | "mela";
+export type ExerciseSequence = {
+  sequence: string[];
+  cardType: CardTypes[];
+}
 
 export type Exercise = {
   assignment: string
-  startSeq: string[]
-  endSeq?: string[]
-  cardType: CardTypes
+  startSeq: ExerciseSequence
+  endSeq?: ExerciseSequence
 }
 
 export type ExperienceLevelJson = {

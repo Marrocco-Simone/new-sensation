@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { CardTypes, Exercise, ExerciseLevel, Game, GamificationModes, GamificationModesMapping } from "../Element/types";
+import React, { useEffect, useMemo, useState } from "react";
+import { CardTypes, Exercise, ExerciseLevel, ExerciseSequence, Game, GamificationModes, GamificationModesMapping } from "../Element/types";
 import { Bin, Copy, Pen, Puzzle } from "../Icons";
 import { useCustomUserContext } from "@/app/context/userStore";
 import { UpArrow } from "../Icons/UpArrow";
@@ -57,7 +57,7 @@ export function ExerciseCard(props: {
         </div>
         <div className="flex flex-col min-h-full text-lg p-2 justify-center">
           <div>Assignment: {game.levels[numLevel].exercises[numExercise].assignment}</div>
-          <div>Starting situation: {game.levels[numLevel].exercises[numExercise].startSeq.join(" ")} Solution: {game.levels[numLevel].exercises[numExercise].endSeq?.join(" ")}</div>
+          <div>Starting situation: {game.levels[numLevel].exercises[numExercise].startSeq?.sequence?.join(" ")} Solution: {game.levels[numLevel].exercises[numExercise].endSeq?.sequence?.join(" ")}</div>
         </div>
         <div className="w-[15%] flex">
             <div
@@ -96,6 +96,7 @@ export function ExerciseCard(props: {
       </div>
       {exercise_modify === mode+"-"+numLevel+"-"+numExercise && (
         <DetailForm
+          mode={mode}
           initial_detail={game.levels[numLevel].exercises[numExercise]} 
           onSave={(exec) => {
             setGame(prev => { 
@@ -149,7 +150,7 @@ export function GameLevelDefinition(props: {
     setExerciseLevelModifying(GamificationModesMapping[mode]+"-"+levelIndex+"-"+(game.levels[levelIndex].exercises.length))
     setGame(prev => {
       let gameModify = {...prev};
-      gameModify.levels[levelIndex].exercises.push({assignment: "", startSeq: [], endSeq: [], cardType: "numero"});
+      gameModify.levels[levelIndex].exercises.push({assignment: "", startSeq: {sequence: [], cardType: []}, endSeq: {sequence: [], cardType: []}});
       return {...gameModify};
     })
   }
@@ -271,16 +272,91 @@ export function GameLevelDefinition(props: {
   );
 }
 
+function TilesInput(props:{
+  typology: string;
+  label: string;
+  placeholder: string;
+  value: ExerciseSequence;
+  position: 0 | 1;
+  onValueChange: React.Dispatch<React.SetStateAction<any>>;
+}) {
+  const {typology, label, placeholder, value, position, onValueChange} = props;
+  const [sequence, setSequence] = useState(value.sequence)
+  const [cardType, setCardType] = useState(value.cardType)
+
+  useEffect(() => {
+    setSequence(value.sequence);
+    setCardType(value.cardType)
+  }, [value.sequence, value.cardType, position])
+
+  return (
+    <div className="flex items-center">
+      <label className="flex gap-5 items-center">
+        <p>{label}</p>
+        <input
+          id={typology}
+          name={typology}
+          value={sequence?.join(" ")}
+          placeholder={placeholder}
+          className="flex bg-slate-300 placeholder:text-slate-700 p-1 pl-3"
+          onChange={(event) => {
+            setSequence(event.currentTarget.value?.split(" ") ?? [])
+            onValueChange((v: ExerciseSequence) => {
+              let copyValue = v;
+              copyValue.sequence = event.currentTarget?.value.split(" ") ?? []
+              return copyValue;
+            });
+          }}
+        />
+      </label>
+
+      <label className="flex gap-5 items-center">
+        <p>Tipologia carte</p>
+        <select
+          onChange={(event) => {
+            setCardType(Array(5).fill(event.target.value as CardTypes))
+            onValueChange((v: ExerciseSequence) => {
+              let copyValue = {...v};
+              // const start = position*5;
+              // const otherSmarterValues = copyValue.cardType.slice(start, Math.abs(start-5));
+              // const newValues = Array(5).fill(event.target.value as CardTypes)
+              // copyValue.cardType = position == 0 ? 
+              //   [...newValues, ...otherSmarterValues] :
+              //   [...otherSmarterValues, ...newValues]
+              // console.log(copyValue)
+              copyValue.cardType = Array(5).fill(event.target.value as CardTypes)
+              return copyValue;
+            });
+          }}
+          value={cardType[0] ?? "numero"}
+          className="text-xl text-white p-2 my-4 rounded-lg"
+          style={{ backgroundColor: "#73B9F9" }}
+          onClick={(e) => e.stopPropagation()}
+          onMouseOver={(e) => e.stopPropagation()}
+        >
+          <option className="max-w-md" value="numero">Numeri</option>
+          <option className="max-w-md" value="mela">Mele</option>
+        </select>
+      </label>
+    </div>
+  )
+}
+
 function DetailForm(props: {
+  mode: number;
   initial_detail?: Exercise;
   onSave: (new_detail: Exercise) => void;
   onCancel: () => void;
 }) {
-  const { initial_detail, onSave, onCancel } = props;
+  const { mode, initial_detail, onSave, onCancel } = props;
   const [assigment, setAssignment] = useState(initial_detail?.assignment)
-  const [start, setStart] = useState(initial_detail?.startSeq.join(" "));
-  const [solution, setSolution] = useState(initial_detail?.endSeq?.join(" "));
-  const [cardType, setCardType] = useState<CardTypes>("numero");
+  const [start, setStart] = useState<ExerciseSequence>({sequence: ( mode == 0 ? initial_detail?.startSeq.sequence : initial_detail?.startSeq?.sequence?.slice(0,5)) ?? [], cardType: initial_detail?.startSeq?.cardType?.length == 0 ? Array<CardTypes>(5).fill("numero" as CardTypes) : initial_detail?.endSeq?.cardType?.slice(0,5) ?? [] });
+  const [start2, setStart2] = useState<ExerciseSequence>({sequence: ( mode == 0 ? initial_detail?.startSeq.sequence : initial_detail?.startSeq?.sequence?.slice(5)) ?? [], cardType: initial_detail?.startSeq?.cardType?.length == 0 ? Array<CardTypes>(5).fill("numero" as CardTypes) : initial_detail?.endSeq?.cardType?.slice(5) ?? [] });
+  const [solution, setSolution] = useState<ExerciseSequence>({sequence: ( mode == 0 ? initial_detail?.endSeq?.sequence : initial_detail?.endSeq?.sequence?.slice(0,5)) ?? [], cardType: initial_detail?.endSeq?.cardType?.length == 0 ? Array<CardTypes>(5).fill("numero" as CardTypes) : initial_detail?.endSeq?.cardType?.slice(0,5) ?? [] });
+  const [solution2, setSolution2] = useState<ExerciseSequence>({sequence: ( mode == 0 ? initial_detail?.endSeq?.sequence : initial_detail?.endSeq?.sequence?.slice(5)) ?? [], cardType: initial_detail?.endSeq?.cardType?.length == 0 ? Array<CardTypes>(5).fill("numero" as CardTypes) : initial_detail?.endSeq?.cardType?.slice(5) ?? [] });
+
+  console.log(start);
+  console.log(solution);
 
   return (
     <div className="flex flex-col gap-5 my-4 p-2 w-full">
@@ -295,48 +371,62 @@ function DetailForm(props: {
           onChange={(event) => setAssignment(event.currentTarget.value)}
         />
       </label>
-
-      <label className="flex gap-5 items-center">
-        <p className="whitespace-nowrap">Starting situation</p>
-        <input
-          id="start"
-          name="start"
-          value={start}
-          placeholder="What appears on the screen? e.g. 1, 2, 3, 4, 5"
-          className="w-full bg-slate-300 placeholder:text-slate-700 p-1 pl-3"
-          onChange={(event) => setStart(event.currentTarget.value)}
-        />
-      </label>
-
-      <label className="flex gap-5 items-center">
-        <p>Solution</p>
-        <input
-          id="solution"
-          name="solution"
-          value={solution}
-          placeholder="Cosa compare come soluzione? es: 1, 2, 3, 4, 5"
-          className="w-full bg-slate-300 placeholder:text-slate-700 p-1 pl-3"
-          onChange={(event) => setSolution(event.currentTarget.value)}
-        />
-      </label>
-
-      <label className="flex gap-5 items-center">
-        <p>Tipologia carte</p>
-        <select
-          onChange={(event) => {
-            const value = event.target.value as CardTypes;
-            setCardType(value);
-          }}
-          value={cardType}
-          className="text-xl text-white p-2 my-4 w-1/4 rounded-lg"
-          style={{ backgroundColor: "#73B9F9" }}
-          onClick={(e) => e.stopPropagation()}
-          onMouseOver={(e) => e.stopPropagation()}
-        >
-          <option className="max-w-md" value="numero">Numeri</option>
-          <option className="max-w-md" value="mela">Mele</option>
-        </select>
-      </label>
+      {mode == 3 ? (
+          <>
+            <TilesInput
+              typology="start"
+              label="Starting situation"
+              onValueChange={setStart}
+              placeholder="What appears on the screen? e.g. 1, 2, 3, 4, 5"
+              value={start}
+              position={0}
+            />
+            <TilesInput
+              typology="solution"
+              label="Solution"
+              onValueChange={setSolution}
+              placeholder="Cosa compare come soluzione? es: 1, 2, 3, 4, 5"
+              value={solution}
+              position={0}
+            />
+          </>
+      ) : (
+        <>
+          <TilesInput
+            typology="start"
+            label="Starting situation SMARTER1"
+            onValueChange={setStart}
+            placeholder="What appears on the screen? e.g. 1, 2, 3, 4, 5"
+            value={start}
+            position={0}
+          />
+          <TilesInput
+            typology="start2"
+            label="Starting situation SMARTER2"
+            onValueChange={setStart2}
+            placeholder="What appears on the screen? e.g. 1, 2, 3, 4, 5"
+            value={start2}
+            position={1}
+          />
+          <TilesInput
+            typology="solution"
+            label="Solution SMARTER1"
+            onValueChange={setSolution}
+            placeholder="Cosa compare come soluzione? es: 1, 2, 3, 4, 5"
+            value={solution}
+            position={0}
+          />
+          <TilesInput
+            typology="solution2"
+            label="Solution SMARTER2"
+            onValueChange={setSolution2}
+            placeholder="Cosa compare come soluzione? es: 1, 2, 3, 4, 5"
+            value={solution2}
+            position={1}
+          />
+        </>
+      )}
+      
 
       <div className="flex self-end w-2/3 justify-end">
         <button
@@ -351,9 +441,29 @@ function DetailForm(props: {
           style={{ backgroundColor: "#FF9900" }}
           onClick={(e) => {
             e.preventDefault();
-            const startSeq = start?.split(" ") ?? [];
-            const endSeq = solution?.split(" ")
-            onSave({assignment: assigment ?? "", startSeq: startSeq, endSeq: startSeq.length === endSeq?.length ? endSeq : undefined, cardType: cardType})
+            console.log(start);
+            console.log(start2)
+            onSave({
+              assignment: assigment ?? "", 
+              startSeq: {
+                sequence: mode == 0 ?
+                  start?.sequence ?? [] :
+                  [...(start?.sequence ?? []), ...(start2?.sequence ?? [])],
+                cardType: mode == 0 ? 
+                  start.cardType :
+                  [...start.cardType, ...(start2?.cardType ?? [])]
+              } ,
+              endSeq: start?.sequence?.length === solution?.sequence?.length ? 
+                {
+                  sequence: mode == 0 ?
+                    solution.sequence :
+                    [...(solution?.sequence ?? []),...(solution2?.sequence ?? [])],
+                  cardType: mode == 0 ?
+                    solution?.cardType ?? [] : 
+                    [...(solution?.cardType ?? []), ...(solution2?.cardType ?? [])]
+                } 
+                : undefined
+              })
           }}
         >
           Save exercise
