@@ -47,7 +47,7 @@ export function ExerciseCard(props: {
   setExerciseModifying: React.Dispatch<React.SetStateAction<string>>
 }) {
   const { game, numExercise, numLevel, exercise_modify, setExerciseModifying, setGame } = props;
-  const mode = useMemo(() => game.levels[numLevel].mode, [game.levels, numLevel])
+  const mode = useMemo(() => game.levels[numLevel].mode, [JSON.stringify(game.levels), numLevel])
 
   return (
     <div className="h-full m-4">
@@ -99,6 +99,7 @@ export function ExerciseCard(props: {
           mode={mode}
           initial_detail={game.levels[numLevel].exercises[numExercise]} 
           onSave={(exec) => {
+            console.log(exec);
             setGame(prev => { 
               prev.levels[numLevel].exercises[numExercise] = exec;
               return {...prev}
@@ -121,8 +122,8 @@ export function GameLevelDefinition(props: {
   const { setGame, modes, game } = props;
   const [mode, setMode] = useState(modes[0]);
   const [exercise_level_modifying, setExerciseLevelModifying] = useState("");
-  const filteredLevels = useMemo(() => game.levels.filter(elem => elem.mode === GamificationModesMapping[mode]), [game, mode])
-  const mapper = useMemo(() => Object.fromEntries(game.levels.filter(elem => elem !== undefined).map((elem,index) => [elem.mode+"-"+elem.n,index])), [game]) // TODO: indaga perchè a volte potrebbe rompersi
+  const filteredLevels = useMemo(() => game.levels.filter(elem => elem.mode === GamificationModesMapping[mode]), [JSON.stringify(game.levels), mode])
+  const mapper = useMemo(() => Object.fromEntries(game.levels.filter(elem => elem !== undefined).map((elem,index) => [elem.mode+"-"+elem.n,index])), [JSON.stringify(game.levels)]) // TODO: indaga perchè a volte potrebbe rompersi
 
   const ButtonComponent = () => {
     return (
@@ -283,7 +284,6 @@ function TilesInput(props:{
 }) {
   const {typology, label, placeholder, value, position, anyMode = false, onValueChange} = props;
   const [cardType, setCardType] = useState(value.cardType)
-  console.log(value);
 
   return (
     <div className="flex items-center">
@@ -297,8 +297,8 @@ function TilesInput(props:{
           className="flex bg-slate-300 placeholder:text-slate-700 p-1 pl-3"
           onChange={(event) => {
             onValueChange((v: ExerciseSequence) => {
-              let copyValue = v;
-              copyValue.sequence = event.currentTarget?.value.split(" ") ?? []
+              let copyValue = JSON.parse(JSON.stringify(v));
+              copyValue.sequence = event.target?.value.split(" ") ?? []
               return copyValue;
             });
           }}
@@ -311,7 +311,7 @@ function TilesInput(props:{
           onChange={(event) => {
             console.log(event);
             onValueChange((v: ExerciseSequence) => {
-              let copyValue = {...v};
+              let copyValue = JSON.parse(JSON.stringify(v));
               // const start = position*5;
               // const otherSmarterValues = copyValue.cardType.slice(start, Math.abs(start-5));
               // const newValues = Array(5).fill(event.target.value as CardTypes)
@@ -319,7 +319,6 @@ function TilesInput(props:{
               //   [...newValues, ...otherSmarterValues] :
               //   [...otherSmarterValues, ...newValues]
               // console.log(copyValue)
-              console.log(event.target.value)
               copyValue.cardType = Array(5).fill(event.target.value as CardTypes)
               return copyValue;
             });
