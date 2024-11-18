@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { GameLevelDefinition } from "./GamificationMode";
 import { ExerciseLevel, Game } from "../Element/types";
+import { Class } from "@/types/ClientTypes";
 
 function InputField(props: {
   id: string;
@@ -33,6 +34,61 @@ function InputField(props: {
   );
 }
 
+function MultiSelectField(props: {
+  id: string;
+  label: string;
+  options: {option: string, label: string}[];
+  selectedOptions: {option: string, label: string}[];
+  onSelectOption?: (option: {option: string, label: string}, checked: boolean) => void
+  extra_text?: string;
+  required?: boolean;
+  disabled?: boolean;
+}) {
+  const { id, label, extra_text, selectedOptions, onSelectOption = () => {}, required, disabled = false, options } = props;
+  const [labelValue, setLabelValue] = useState<string>("");
+
+  useEffect(() => {
+    setLabelValue(selectedOptions.map(o => o.label).join(","));
+  },[JSON.stringify(selectedOptions)])
+
+  return (
+    <>
+      <label htmlFor={id} className="text-2xl">
+        {label}
+      </label>
+      {extra_text && <p>{extra_text}</p>}
+      <label className="relative text-xl text-white p-2 my-4 w-1/4 rounded-lg" style={{ backgroundColor: "#73B9F9" }}>
+        <input type="checkbox" className="hidden peer" />
+          {labelValue.length == 0 ? 
+            "Click here to select class" :
+            labelValue}
+        <div className="absolute mt-2 w-full text-black bg-white border transition-opacity opacity-0 pointer-events-none peer-checked:opacity-100 peer-checked:pointer-events-auto">
+          <ul>
+            {options.map((option, i) => {
+              return (
+                <li key={option.option}>
+                  <label className="flex whitespace-nowrap cursor-pointer px-2 py-1 transition-colors hover:bg-blue-100 [&:has(input:checked)]:bg-blue-200">
+                    <input
+                      type="checkbox"
+                      value={option.label}
+                      className="cursor-pointer"
+                      checked={!!selectedOptions.find(opt => (opt.option == option.option))}
+                      onChange={(e) => {
+                        onSelectOption(option, e.target.checked);
+                      }}
+                    />
+                    <span className="ml-1">{option.label}</span>
+                  </label>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </label>
+    </>
+  );
+}
+
 type GamificationModes = "individual" | "coop-disconnected" | "coop-connected";
 const modes: GamificationModes[] = [
   "individual",
@@ -44,15 +100,17 @@ const modes: GamificationModes[] = [
 export function CreateGameModal(props: {
   rules_ids: string[];
   modal: React.RefObject<HTMLDialogElement>;
+  classes: Class[]
   update?: boolean;
   gameData?: Game;
   reloadData: () => void;
 }) {
-  const { rules_ids, modal, update = false, gameData, reloadData } = props;
+  const { rules_ids, modal, classes, update = false, gameData, reloadData } = props;
   const {accessToken} = useCustomUserContext();
   const router = useRouter();
   const [game, setGame] = useState<Omit<Game, "_id">>(gameData ?? {
     name: "",
+    classes: [],
     enabled: true,
     levels: []
   })
@@ -100,11 +158,26 @@ export function CreateGameModal(props: {
         <h3 className="text-3xl font-bold my-4">{update ? "Update game" : "New game"}</h3>
         <InputField 
           id="name" label="Game name" required defaultValue={game.name}/>
-        <InputField
+        <MultiSelectField
           id="classrooms"
           label="Classes"
-				  extra_text=" Select which classes the game applies to. You can modify this information on the “My games” page."
-        />
+          selectedOptions={game.classes.map(id => ({option: id, label: classes.find(c => c._id == id)?.ClassName ?? ""})) ?? []}
+          onSelectOption={(option, checked) => {
+            setGame(prev => {
+              let gameModify = {...prev} as Game;
+              let prevClasses = gameModify.classes;
+              if (checked) {
+                prevClasses.push(option.option);
+              } else {
+                prevClasses = prevClasses.filter(c => c != option.option);
+              }
+              gameModify.classes = prevClasses;
+              console.log(gameModify);
+              return {...gameModify};
+            })
+          }}
+          options={classes.map(c => ({option: c._id, label: c.ClassName}))}
+				  extra_text=" Select which classes the game applies to. You can modify this information on the “My games” page."/>
         {/* <InputField
           id="students"
           label="Studenti"

@@ -9,13 +9,15 @@ import { Check, X_Check, Pen, Copy, Bin } from "../Icons";
 import { useCustomUserContext } from "@/app/context/userStore";
 import { CreateGameModal } from "../Modal";
 import { Game } from "../Element/types";
+import { Class } from "@/types/ClientTypes";
 
 export function GameBoxTopRow(props: {
   task: TaskJson;
+  classes: Class[];
   game?: Game;
   reloadData: () => void;
 }) {
-  const { task, game, reloadData } = props;
+  const { task, game, classes, reloadData } = props;
   const {accessToken} = useCustomUserContext();
 
   const [new_task_name, setNewTaskName] = useState(task.name);
@@ -89,6 +91,7 @@ export function GameBoxTopRow(props: {
         modal={gameDefinitionModal}
         rules_ids={[]}
         gameData={game}
+        classes={classes}
         reloadData={reloadData}
         update/>
     </div>

@@ -28,6 +28,11 @@ export type BlockText =
       value?: string;
     };
 
+export type Class = {
+  _id: string;
+  ClassName: string
+}
+
 export type Block = {
   name: string;
   text: BlockText[];

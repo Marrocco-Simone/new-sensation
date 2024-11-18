@@ -6,8 +6,9 @@ import { Rule, TaskJson, Vocabulary, VocabularyMetadata } from "@/types";
 import { NoElementMenu } from "@/components/Menu";
 import { GameBox } from "@/components/Box";
 import { Puzzle } from "@/components/Icons";
-import { useGamesApiQuery, useRulesApiQuery, useTasksApiQuery, useVocabularyApiQuery } from "@/hooks/useKnownApiQuery";
+import { useClassesApiQuery, useGamesApiQuery, useRulesApiQuery, useTasksApiQuery, useVocabularyApiQuery } from "@/hooks/useKnownApiQuery";
 import { Game } from "@/components/Element/types";
+import { Class } from "@/types/ClientTypes";
 
 function GamesPartial(props: {
     vocabularies_metadata: VocabularyMetadata[];
@@ -35,10 +36,17 @@ function GamesPartial(props: {
       invalidateQuery: invalidateGamesQuery,
     } = useGamesApiQuery();
 
+    const { 
+      data: classes,
+      is_loading: classes_is_loading,
+      is_error: classes_is_errors,
+      invalidateQuery: invalidateClassesQuery,
+    } = useClassesApiQuery();
+
     const gamesMap = useMemo(() => Object.groupBy(gamesData?.data ?? [], g => g.externalId ?? "undefined"), [gamesData?.data]);
   
-    if (rules_is_loading || tasks_is_loading || games_is_loading) return <h1>Caricamento</h1>;
-    if (rules_is_error || tasks_is_error || games_is_errors) return <h1>Errore</h1>;
+    if (rules_is_loading || tasks_is_loading || games_is_loading || classes_is_loading) return <h1>Caricamento</h1>;
+    if (rules_is_error || tasks_is_error || games_is_errors || classes_is_errors) return <h1>Errore</h1>;
   
     return (
       <GamesLoaded
@@ -46,11 +54,13 @@ function GamesPartial(props: {
         rules={rules}
         tasks={tasks}
         gamesMap={gamesMap}
+        classes={classes}
         vocabularies_metadata={vocabularies_metadata}
         reloadData={() => {
           invalidateRulesQuery();
           invalidateTasksQuery();
           invalidateGamesQuery();
+          invalidateClassesQuery();
         }}
       />
     );
@@ -61,11 +71,12 @@ function GamesLoaded(props: {
   vocabularies: Vocabulary[];
   rules: Rule[];
   tasks: TaskJson[];
+  classes: Class[];
   vocabularies_metadata: VocabularyMetadata[];
   gamesMap: Partial<Record<string, Game[]>>;
   reloadData: () => void;
 }) {
-  const { vocabularies, rules, tasks, vocabularies_metadata, gamesMap, reloadData } =
+  const { vocabularies, rules, tasks, classes, vocabularies_metadata, gamesMap, reloadData } =
     props;
 
   const [task_keyword_searched, setTaskKeywordSearched] = useState("");
@@ -142,6 +153,7 @@ function GamesLoaded(props: {
               key={t.id}
               task={t}
               rules={rules}
+              classes={classes}
               game={gamesMap?.[t.id]?.[0]}
               vocabularies_metadata={vocabularies_metadata}
               reloadData={reloadData}

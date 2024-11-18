@@ -23,11 +23,12 @@ export type Point = {
 }
 
 export type Game = {
-  _id: string,
-  name: string,
-  externalId?: string,
-  levels: ExerciseLevel[],
-  enabled: boolean
+  _id: string;
+  classes: string[];
+  name: string;
+  externalId?: string;
+  levels: ExerciseLevel[];
+  enabled: boolean;
 }
 
 export type GameJson = {
@@ -52,7 +53,7 @@ export const GamificationModesMapping : {[x: string]: number} = {
 }
 
 export type GamificationModes = "individual" | "coop-disconnected" | "coop-connected";
-export type CardTypes = "numero" | "mela";
+export type CardTypes = "numero" | "mela" | "qualsiasi";
 export type ExerciseSequence = {
   sequence: string[];
   cardType: CardTypes[];

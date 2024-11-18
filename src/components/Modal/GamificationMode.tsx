@@ -278,16 +278,12 @@ function TilesInput(props:{
   placeholder: string;
   value: ExerciseSequence;
   position: 0 | 1;
+  anyMode?: boolean;
   onValueChange: React.Dispatch<React.SetStateAction<any>>;
 }) {
-  const {typology, label, placeholder, value, position, onValueChange} = props;
-  const [sequence, setSequence] = useState(value.sequence)
+  const {typology, label, placeholder, value, position, anyMode = false, onValueChange} = props;
   const [cardType, setCardType] = useState(value.cardType)
-
-  useEffect(() => {
-    setSequence(value.sequence);
-    setCardType(value.cardType)
-  }, [value.sequence, value.cardType, position])
+  console.log(value);
 
   return (
     <div className="flex items-center">
@@ -296,11 +292,10 @@ function TilesInput(props:{
         <input
           id={typology}
           name={typology}
-          value={sequence?.join(" ")}
+          defaultValue={value.sequence?.join(" ")}
           placeholder={placeholder}
           className="flex bg-slate-300 placeholder:text-slate-700 p-1 pl-3"
           onChange={(event) => {
-            setSequence(event.currentTarget.value?.split(" ") ?? [])
             onValueChange((v: ExerciseSequence) => {
               let copyValue = v;
               copyValue.sequence = event.currentTarget?.value.split(" ") ?? []
@@ -314,7 +309,7 @@ function TilesInput(props:{
         <p>Tipologia carte</p>
         <select
           onChange={(event) => {
-            setCardType(Array(5).fill(event.target.value as CardTypes))
+            console.log(event);
             onValueChange((v: ExerciseSequence) => {
               let copyValue = {...v};
               // const start = position*5;
@@ -324,11 +319,12 @@ function TilesInput(props:{
               //   [...newValues, ...otherSmarterValues] :
               //   [...otherSmarterValues, ...newValues]
               // console.log(copyValue)
+              console.log(event.target.value)
               copyValue.cardType = Array(5).fill(event.target.value as CardTypes)
               return copyValue;
             });
           }}
-          value={cardType[0] ?? "numero"}
+          defaultValue={value.cardType[0] ?? "numero"}
           className="text-xl text-white p-2 my-4 rounded-lg"
           style={{ backgroundColor: "#73B9F9" }}
           onClick={(e) => e.stopPropagation()}
@@ -336,6 +332,7 @@ function TilesInput(props:{
         >
           <option className="max-w-md" value="numero">Numeri</option>
           <option className="max-w-md" value="mela">Mele</option>
+          {anyMode ? <option className="max-w-md" value="qualsiasi">Qualsiasi</option>: null}
         </select>
       </label>
     </div>
@@ -350,13 +347,20 @@ function DetailForm(props: {
 }) {
   const { mode, initial_detail, onSave, onCancel } = props;
   const [assigment, setAssignment] = useState(initial_detail?.assignment)
-  const [start, setStart] = useState<ExerciseSequence>({sequence: ( mode == 0 ? initial_detail?.startSeq.sequence : initial_detail?.startSeq?.sequence?.slice(0,5)) ?? [], cardType: initial_detail?.startSeq?.cardType?.length == 0 ? Array<CardTypes>(5).fill("numero" as CardTypes) : initial_detail?.endSeq?.cardType?.slice(0,5) ?? [] });
-  const [start2, setStart2] = useState<ExerciseSequence>({sequence: ( mode == 0 ? initial_detail?.startSeq.sequence : initial_detail?.startSeq?.sequence?.slice(5)) ?? [], cardType: initial_detail?.startSeq?.cardType?.length == 0 ? Array<CardTypes>(5).fill("numero" as CardTypes) : initial_detail?.endSeq?.cardType?.slice(5) ?? [] });
-  const [solution, setSolution] = useState<ExerciseSequence>({sequence: ( mode == 0 ? initial_detail?.endSeq?.sequence : initial_detail?.endSeq?.sequence?.slice(0,5)) ?? [], cardType: initial_detail?.endSeq?.cardType?.length == 0 ? Array<CardTypes>(5).fill("numero" as CardTypes) : initial_detail?.endSeq?.cardType?.slice(0,5) ?? [] });
-  const [solution2, setSolution2] = useState<ExerciseSequence>({sequence: ( mode == 0 ? initial_detail?.endSeq?.sequence : initial_detail?.endSeq?.sequence?.slice(5)) ?? [], cardType: initial_detail?.endSeq?.cardType?.length == 0 ? Array<CardTypes>(5).fill("numero" as CardTypes) : initial_detail?.endSeq?.cardType?.slice(5) ?? [] });
+  const [start, setStart] = useState<ExerciseSequence>({sequence: ( mode == 3 ? initial_detail?.startSeq.sequence : initial_detail?.startSeq?.sequence?.slice(0,5)) ?? [], cardType: initial_detail?.startSeq?.cardType?.length == 0 ? Array<CardTypes>(5).fill("numero" as CardTypes) : initial_detail?.startSeq?.cardType?.slice(0,5) ?? [] });
+  const [start2, setStart2] = useState<ExerciseSequence>({sequence: ( mode == 3 ? initial_detail?.startSeq.sequence : initial_detail?.startSeq?.sequence?.slice(5)) ?? [], cardType: initial_detail?.startSeq?.cardType?.length == 0 ? Array<CardTypes>(5).fill("numero" as CardTypes) : initial_detail?.startSeq?.cardType?.slice(5) ?? [] });
+  const [solution, setSolution] = useState<ExerciseSequence>({sequence: ( mode == 3 ? initial_detail?.endSeq?.sequence : initial_detail?.endSeq?.sequence?.slice(0,5)) ?? [], cardType: initial_detail?.endSeq?.cardType?.length == 0 ? Array<CardTypes>(5).fill("numero" as CardTypes) : initial_detail?.endSeq?.cardType?.slice(0,5) ?? [] });
+  const [solution2, setSolution2] = useState<ExerciseSequence>({sequence: ( mode == 3 ? initial_detail?.endSeq?.sequence : initial_detail?.endSeq?.sequence?.slice(5)) ?? [], cardType: initial_detail?.endSeq?.cardType?.length == 0 ? Array<CardTypes>(5).fill("numero" as CardTypes) : initial_detail?.endSeq?.cardType?.slice(5) ?? [] });
 
-  console.log(start);
-  console.log(solution);
+  // useEffect(() => {
+  //   console.log("change initial detail")
+  //   setAssignment(initial_detail?.assignment);
+  //   setStart({sequence: ( mode == 3 ? initial_detail?.startSeq.sequence : initial_detail?.startSeq?.sequence?.slice(0,5)) ?? [], cardType: initial_detail?.startSeq?.cardType?.length == 0 ? Array<CardTypes>(5).fill("numero" as CardTypes) : initial_detail?.startSeq?.cardType?.slice(0,5) ?? [] });
+  //   setStart2({sequence: ( mode == 3 ? initial_detail?.startSeq.sequence : initial_detail?.startSeq?.sequence?.slice(5)) ?? [], cardType: initial_detail?.startSeq?.cardType?.length == 0 ? Array<CardTypes>(5).fill("numero" as CardTypes) : initial_detail?.startSeq?.cardType?.slice(5) ?? [] });
+  //   setSolution({sequence: ( mode == 3 ? initial_detail?.endSeq?.sequence : initial_detail?.endSeq?.sequence?.slice(0,5)) ?? [], cardType: initial_detail?.endSeq?.cardType?.length == 0 ? Array<CardTypes>(5).fill("numero" as CardTypes) : initial_detail?.endSeq?.cardType?.slice(0,5) ?? [] });
+  //   setSolution2({sequence: ( mode == 3 ? initial_detail?.endSeq?.sequence : initial_detail?.endSeq?.sequence?.slice(5)) ?? [], cardType: initial_detail?.endSeq?.cardType?.length == 0 ? Array<CardTypes>(5).fill("numero" as CardTypes) : initial_detail?.endSeq?.cardType?.slice(5) ?? [] });
+
+  // },[initial_detail?.assignment, initial_detail?.endSeq?.cardType, initial_detail?.endSeq?.sequence, initial_detail?.startSeq?.cardType, initial_detail?.startSeq.sequence, mode])
 
   return (
     <div className="flex flex-col gap-5 my-4 p-2 w-full">
@@ -387,6 +391,7 @@ function DetailForm(props: {
               onValueChange={setSolution}
               placeholder="Cosa compare come soluzione? es: 1, 2, 3, 4, 5"
               value={solution}
+              anyMode
               position={0}
             />
           </>
@@ -413,6 +418,7 @@ function DetailForm(props: {
             label="Solution SMARTER1"
             onValueChange={setSolution}
             placeholder="Cosa compare come soluzione? es: 1, 2, 3, 4, 5"
+            anyMode
             value={solution}
             position={0}
           />
@@ -421,6 +427,7 @@ function DetailForm(props: {
             label="Solution SMARTER2"
             onValueChange={setSolution2}
             placeholder="Cosa compare come soluzione? es: 1, 2, 3, 4, 5"
+            anyMode
             value={solution2}
             position={1}
           />
@@ -443,22 +450,25 @@ function DetailForm(props: {
             e.preventDefault();
             console.log(start);
             console.log(start2)
+            console.log(solution);
+            console.log(solution2)
+            console.log(mode);
             onSave({
               assignment: assigment ?? "", 
               startSeq: {
-                sequence: mode == 0 ?
+                sequence: mode == 3 ?
                   start?.sequence ?? [] :
                   [...(start?.sequence ?? []), ...(start2?.sequence ?? [])],
-                cardType: mode == 0 ? 
+                cardType: mode == 3 ? 
                   start.cardType :
                   [...start.cardType, ...(start2?.cardType ?? [])]
               } ,
               endSeq: start?.sequence?.length === solution?.sequence?.length ? 
                 {
-                  sequence: mode == 0 ?
+                  sequence: mode == 3 ?
                     solution.sequence :
                     [...(solution?.sequence ?? []),...(solution2?.sequence ?? [])],
-                  cardType: mode == 0 ?
+                  cardType: mode == 3 ?
                     solution?.cardType ?? [] : 
                     [...(solution?.cardType ?? []), ...(solution2?.cardType ?? [])]
                 } 

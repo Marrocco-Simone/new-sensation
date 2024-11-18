@@ -127,7 +127,7 @@ function ModifyBadgeRow({
       <TdCell>
         <input
           type="text"
-          defaultValue={badge?.name}
+          defaultValue={badge?.classes}
           placeholder="Insert the name of classes separated by comma"
           id="classes"
           form={form_id}

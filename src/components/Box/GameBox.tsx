@@ -9,15 +9,17 @@ import { AddRuleToTaskModal } from "../Modal";
 import { GameBoxTopRow, RuleBox } from ".";
 import { useCustomUserContext } from "@/app/context/userStore";
 import { Game } from "../Element/types";
+import { Class } from "@/types/ClientTypes";
 
 export function GameBox(props: {
   task: TaskJson;
   rules: Rule[];
   vocabularies_metadata: VocabularyMetadata[];
+  classes: Class[];
   game?: Game
   reloadData: () => void;
 }) {
-  const { task, rules, vocabularies_metadata, game, reloadData } = props;
+  const { task, rules, vocabularies_metadata, game, classes, reloadData } = props;
   const task_instances_url = `tasks/${task.id}/instances`;
   const modal = useRef<HTMLDialogElement>(null);
   const { accessToken } = useCustomUserContext();
@@ -50,7 +52,7 @@ export function GameBox(props: {
 
   return (
     <div className="border border-solid border-black rounded-xl mb-5">
-      <GameBoxTopRow task={task} game={game} reloadData={reloadData} />
+      <GameBoxTopRow task={task} game={game} classes={classes} reloadData={reloadData} />
 
       <div className="flex justify-between text-2xl p-7">
         <Toggle

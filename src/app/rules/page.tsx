@@ -12,18 +12,20 @@ import { NoElementMenu } from "@/components/Menu";
 import { Bin, Copy, DocumentPlus, Pen } from "@/components/Icons";
 import { CreateRuleMenu } from "@/components/Menu/CreateRuleMenu";
 import VocabularyFilter from "@/components/VocabularyFilter";
-import { useRulesApiQuery, useVocabularyApiQuery } from "@/hooks/useKnownApiQuery";
+import { useClassesApiQuery, useRulesApiQuery, useVocabularyApiQuery } from "@/hooks/useKnownApiQuery";
 import { useCustomUserContext } from "../context/userStore";
 import { CreateGameModal } from "@/components/Modal/CreateGameModal";
+import { Class } from "@/types/ClientTypes";
 
 function RulesLoaded(props: {
   rules: Rule[];
   vocabularies: Vocabulary[];
   blocks: Block[];
   vocabularies_metadata: VocabularyMetadata[];
+  classes: Class[];
   reloadRules: () => void;
 }) {
-  const { rules, vocabularies, blocks, vocabularies_metadata, reloadRules } =
+  const { rules, vocabularies, blocks, vocabularies_metadata, classes, reloadRules } =
     props;
   const {accessToken} = useCustomUserContext();
 
@@ -197,7 +199,7 @@ function RulesLoaded(props: {
             </div>
           ))}
       </div>
-      <CreateGameModal modal={modal} rules_ids={selected_rules_ids} reloadData={() => {}}/>
+      <CreateGameModal modal={modal} rules_ids={selected_rules_ids} classes={classes} reloadData={() => {}}/>
     </main>
   );
 }
@@ -206,8 +208,9 @@ function RulesPartial(props: {
     vocabularies_metadata: VocabularyMetadata[];
     vocabularies: Vocabulary[];
     blocks: Block[];
+    classes: Class[];
   }) {
-    const { vocabularies_metadata, vocabularies, blocks } = props;
+    const { vocabularies_metadata, vocabularies, blocks, classes } = props;
     const {
       data: rules,
       is_loading,
@@ -224,6 +227,7 @@ function RulesPartial(props: {
         vocabularies={vocabularies}
         blocks={blocks}
         vocabularies_metadata={vocabularies_metadata}
+        classes={classes}
         reloadRules={invalidateQuery}
       />
     );
@@ -231,17 +235,19 @@ function RulesPartial(props: {
   
 export default function ClientPage() {
     const { data, is_loading, is_error } = useVocabularyApiQuery();
+    const { data: classes, is_loading: is_loading_classes, is_error: is_error_classes } = useClassesApiQuery();
 
-    if (is_loading) return <h1>Caricamento</h1>;
-    if (is_error) return <h1>Errore</h1>;
+    if (is_loading || is_loading_classes) return <h1>Caricamento</h1>;
+    if (is_error || is_error_classes) return <h1>Errore</h1>;
 
     const { vocabularies_metadata, vocabularies, blocks } = data;
 
     return (
         <RulesPartial
-        vocabularies_metadata={vocabularies_metadata}
-        vocabularies={vocabularies}
-        blocks={blocks}
+          vocabularies_metadata={vocabularies_metadata}
+          vocabularies={vocabularies}
+          blocks={blocks}
+          classes={classes}
         />
     );
 }

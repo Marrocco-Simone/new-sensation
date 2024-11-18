@@ -13,6 +13,7 @@ import {
   convertVocabularyMetadataToVocabularyAndBlocks,
 } from "@/utils/fromApitoAppTypes";
 import { Badge, ExerciseLevel, ExperienceLevel, Game, GameJson, Point } from "@/components/Element/types";
+import { Class } from "@/types/ClientTypes";
 
 export function useVocabularyApiQuery(): apiQueryResponse<{
   vocabularies_metadata: VocabularyMetadata[];
@@ -101,4 +102,8 @@ export function useGamesApiQuery(): apiQueryResponse<GameJson> {
 
 export function usePointsApiQuery(): apiQueryResponse<Point[]> {
   return useApiQuery(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/points", apiGet<Point[]>);
+}
+
+export function useClassesApiQuery(): apiQueryResponse<Class[]> {
+  return useApiQuery(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/classroom/all", apiGet<Class[]>);
 }
