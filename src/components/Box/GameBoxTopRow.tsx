@@ -1,5 +1,6 @@
 import { TaskJson } from "@/types";
 import {
+  createGameApi,
   createTaskApi,
   deleteTaskApi,
   modifyTaskApi,
@@ -69,13 +70,13 @@ export function GameBoxTopRow(props: {
       )}
       <div
         className="h-20 p-3 cursor-pointer duration-75 ease-in-out hover:scale-110"
-        onClick={() =>
-          createTaskApi(
-            task.name + " - copia",
-            task.rules.map((r) => r.id),
-            accessToken,
-            reloadData
-          )
+        onClick={() =>{
+          if (!game) return;
+          let gameCreate: Game = { ...game };
+          delete (gameCreate as any)._id;
+          gameCreate.name = gameCreate.name + " - copia";
+          createGameApi(task.rules.map(r => r.id), gameCreate, accessToken, reloadData);
+        }
         }
       >
         <Copy />
