@@ -45,6 +45,7 @@ const experienceSubmit: (
       })
     } else {
       modifyExpLevelApi(level_to_modify, expLvl, accessToken, (expLvl) => {
+        console.log("enter")
         setExpLvl(prev => prev.map(l => l._id == level_to_modify ? expLvl : l))
         setExperienceLevelModifying("");
         // @ts-expect-error
@@ -181,6 +182,7 @@ export function Levels({
         </thead>
         <tbody>
           {currentExpLevels.map((level) => {
+            console.log(experience_level_modifying);
             if (experience_level_modifying === level._id)
               return (
                 <ModifyExperienceLevelRow

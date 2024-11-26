@@ -220,8 +220,8 @@ export function modifyExpLevelApi(
   wrapApiCallInWaitingSwal(
     () => apiPut<ExperienceLevel>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/levels/"+exp_lvl_id ,exp_lvl, access_token),
     (res) => {
-      Swal.fire("Livello esperienza "+ res.data?.name +" aggiunto", "success");
-      if (reloadData && res.data) reloadData(res.data);
+      Swal.fire("Livello esperienza "+ exp_lvl.name +" modificato", "success");
+      if (reloadData) reloadData({_id: exp_lvl_id, ...exp_lvl});
     }
   );
 }
@@ -346,7 +346,7 @@ export function modifyPointApi(
     () => apiPut<Point>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/points/"+point_id, point, access_token),
     (res) => {
       Swal.fire("Punto esperienza aggiornato", "success");
-      if (reloadData && res.data) reloadData(res.data);
+      if (reloadData) reloadData({_id: point_id, ...point});
     }
   );
 }
