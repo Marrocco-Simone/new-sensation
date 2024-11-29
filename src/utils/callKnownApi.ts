@@ -178,7 +178,7 @@ export function modifyBadgeApi(
     () => apiPut<Badge>(process.env.NEXT_PUBLIC_SMARTGAME_URL + "/badge/"+badge_id, badge, access_token),
     (res) => {
       Swal.fire("Badge modificato", res.data?.name, "success");
-      if (reloadData && res.data) reloadData(res.data);
+      if (reloadData) reloadData({_id: badge_id, ...badge});
     }
   );
 }
