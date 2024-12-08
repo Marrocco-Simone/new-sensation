@@ -3,9 +3,9 @@ import React from "react";
 
 export default function SelectOfStrings(props: {
   blocks: Block[];
-  options: string[];
+  options: {value: string; label: string}[];
   std_text: string;
-  onChange: (value: string) => void;
+  onChange: (value: any) => void;
 }) {
   const { blocks, options, std_text, onChange } = props;
   if (!blocks.length) return <></>;
@@ -13,8 +13,11 @@ export default function SelectOfStrings(props: {
   return (
     <select
       onChange={(event) => {
-        const value = event.target.value;
-        onChange(value);
+        const value = JSON.parse(event.target.value ?? {});
+        onChange({
+          value: value.value,
+          gui_value: value.label
+        });
       }}
       value=""
       className="text-white p-2"
@@ -24,8 +27,8 @@ export default function SelectOfStrings(props: {
     >
       <option className="max-w-md">{std_text}</option>
       {options.map((x, index) => (
-        <option key={index} value={x}>
-          {x}
+        <option key={index} value={JSON.stringify(x)}>
+          {x.label}
         </option>
       ))}
     </select>

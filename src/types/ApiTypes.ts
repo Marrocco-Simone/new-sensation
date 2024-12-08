@@ -16,28 +16,34 @@ export type ParamMetadata = {
 export type BlockLabel = {
   type: "TEXT";
   value: string;
+  gui_value?: string
 } | BlockParam;
 
 export type BlockParam =
   | {
       type: "TEXT";
       value: string;
+      gui_value?: string
     }
   | {
       type: "PARAM_CLASS";
       values: string[];
+      gui_value?: string
     }
   | {
       type: "PARAM_STRING";
       values: string[];
+      gui_value?: string
     }
   | {
       type: "PARAM_OPEN_STRING";
       url: string;
+      gui_value?: string
     }
   | {
       type: "PARAM_INTEGER";
       values: number[];
+      gui_value?: string
     };
 
 export type BlockType =
@@ -62,6 +68,7 @@ export type BlockJson = {
   vocabulary: VocabularyMetadata | string;
   params: BlockJson[];
   value?: string | number;
+  gui_value?: string
 };
 
 export type CreateRuleJson = {

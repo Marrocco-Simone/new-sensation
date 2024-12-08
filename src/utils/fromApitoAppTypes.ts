@@ -105,7 +105,10 @@ export function convertBlockJsonToBlock(
         break;
       case "PARAM_OPEN_STRING":
         text.push({
-          label,
+          label: {
+            gui_value: b.params[param_index].gui_value,
+            ...label
+          },
           type,
           value: b.params[param_index].value as string,
         });
@@ -161,6 +164,7 @@ export function convertBlockToBlockJson(
           params: [],
           vocabulary,
           value: t.value,
+          gui_value: t.label.gui_value
         });
         break;
       case "PARAM_STRING":
@@ -169,6 +173,7 @@ export function convertBlockToBlockJson(
           params: [],
           vocabulary,
           value: t.value,
+          gui_value: t.label.gui_value
         });
         break;
       case "PARAM_OPEN_STRING":
@@ -177,6 +182,7 @@ export function convertBlockToBlockJson(
           params: [],
           vocabulary,
           value: t.value,
+          gui_value: t.label.gui_value
         });
         break;
     }

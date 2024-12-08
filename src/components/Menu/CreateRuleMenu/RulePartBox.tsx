@@ -79,25 +79,29 @@ export default function RulePartBox(props: {
   function addBlockChoice(
     b: Block,
     t_index: number,
-    new_value: string,
+    new_value: any, // TODO: refactor
     valueIsChanged: (new_b: Block) => void
   ) {
     const new_b: Block = JSON.parse(JSON.stringify(b));
     const new_t = new_b.text[t_index];
     switch (new_t.type) {
       case "PARAM_INTEGER":
-        new_t.value = Number(new_value);
+        new_t.value = Number(new_value.value);
+        if (new_t.label.type != "TEXT" && new_t.label.type != "PARAM_CLASS") new_t.label.gui_value = new_value.gui_value;
         break;
       case "PARAM_STRING":
-        new_t.value = new_value;
+        new_t.value = new_value.value;
+        if (new_t.label.type != "TEXT" && new_t.label.type != "PARAM_CLASS") new_t.label.gui_value = new_value.gui_value;
         break;
       case "PARAM_OPEN_STRING":
-        new_t.value = new_value;
+        new_t.value = (new_value.value ?? new_value);
+        if (new_t.label.type != "TEXT" && new_t.label.type != "PARAM_CLASS") new_t.label.gui_value = new_value.gui_value;
         break;
       case "PARAM_CLASS":
         new_t.choice = findBlock(new_value);
         break;
     }
+    console.log(new_t);
     new_b.text[t_index] = new_t;
     valueIsChanged(new_b);
   }
@@ -163,7 +167,7 @@ export default function RulePartBox(props: {
                 key={t_index}
                 onClick={() => resetBlockChoice(b, t_index, valueIsChanged)}
               >
-                {t.value}
+                {t.label.gui_value}
               </WrapNodeInClickableDiv>
             );
           else 
@@ -172,7 +176,7 @@ export default function RulePartBox(props: {
                 key={t_index}
                 blocks={blocks}
                 std_text="<specify number>"
-                options={t.label.values.map((x) => `${x}`)}
+                options={t.label.values.map(x => ({label: `${x}`, value: `${x}`}))}
                 onChange={(value) =>
                   addBlockChoice(b, t_index, value, valueIsChanged)
                 }
@@ -189,7 +193,7 @@ export default function RulePartBox(props: {
                 key={t_index}
                 onClick={() => resetBlockChoice(b, t_index, valueIsChanged)}
               >
-                {t.value}
+                {t.label.gui_value}
               </WrapNodeInClickableDiv>
             );
           else
@@ -198,7 +202,7 @@ export default function RulePartBox(props: {
                 key={t_index}
                 blocks={blocks}
                 std_text="<specify>"
-                options={t.label.values}
+                options={t.label.values.map(v => ({label: v, value: v}))}
                 onChange={(value) =>
                   addBlockChoice(b, t_index, value, valueIsChanged)
                 }
@@ -215,7 +219,7 @@ export default function RulePartBox(props: {
                 key={t_index}
                 onClick={() => resetBlockChoice(b, t_index, valueIsChanged)}
               >
-                {t.value}
+                {t.label.gui_value ?? t.value}
               </WrapNodeInClickableDiv>
             );
           else if (!!t.label.url) {
